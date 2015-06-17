@@ -69,3 +69,12 @@ class CommandOMC:
         strcommand.append('})')
         command = ''.join(strcommand) 
         return command
+    
+    def getClassNames(self, _model):
+        ''' _model: name of the package containing the networks or the models to be simulated '''
+        strcommand= []
+        strcommand.append('getClassNames(')
+        strcommand.append(_model)
+        strcommand.append(')')
+        command= ''.join(strcommand)
+        return command

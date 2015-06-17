@@ -63,8 +63,8 @@ def main(argv):
     print('Simulation')
     print (toc - tic) #elapsed time in seconds
     
-    '''Use of ModelicaRes to parse OM output values to HDF5'''
-    #build file path with outputpath, using the ModelicaRes to read the .mat file
+    '''TODO: Use Signal and PhasorMeasH5 from ScriptMAE '''
+    # build file path with outputpath, using the ModelicaRes to read the .mat file
     simResult= outPath+ '/'+ resultfile
     simulationOutput = SimRes(simResult)
 #     print len(simulationOutput.get_values('bus1.v'))
@@ -77,7 +77,7 @@ def main(argv):
     parser.h5_format_Signal(measurement,'samples')
     parser.h5_format_Signal(measurement,'voltage')
     parser.h5_endFormat()
-    
+    ''' TODO: Use matplotlib; the same as simulationJM.py '''
     command= objCOMC.plot(moParams.getModelOutputs())
     OMPython.execute(command)
     print command
