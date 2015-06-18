@@ -28,8 +28,9 @@ def main(argv):
     config= cfg.SimulationConfigOMC(sys.argv[2])
     simOptions= config.setSimOptions()
     ''' Loading input and output attributes values for the model '''
-    moParams= OMCModelParams(moPath, moInput)
+    moParams= OMCModelParams( moInput)
     moParams.loadModelValues()
+    
     # routine to initialize values from power flow solution
 #     model.getInitNames_Dymola(moInputFile, 186)
 #     model.getInitValues_Dymola(moInputFile, 186)
@@ -50,6 +51,7 @@ def main(argv):
     success= OMPython.execute(command)
     if (success):
         command= objCOMC.simulate(moModel, simOptions, moParams.getModelInputs())
+#         command= objCOMC.simulate(moModel, simOptions, False)
         print '3) Command', command
         result= OMPython.execute(command)
         print '1) Result', result
@@ -70,15 +72,14 @@ def main(argv):
 #     print len(simulationOutput.get_values('bus1.v'))
     measurement= signal.SignalMeasurement(len(simulationOutput.get_values('time')))
     measurement.add_Samples(simulationOutput.get_values('time'))
-    print moParams.getModelOutputs()[0]
-    measurement.add_SignalPhaseB(simulationOutput.get_values(moParams.getModelOutputs()[0]), [])
+    measurement.add_SignalPhaseB(simulationOutput.get_values('bus4.p.vr'), [])
     ''' Store outputs into HDF5 format '''
     parser= fm.FormatMeasurement(outPath, len(simulationOutput.get_values('time')))
     parser.h5_format_Signal(measurement,'samples')
     parser.h5_format_Signal(measurement,'voltage')
     parser.h5_endFormat()
     ''' TODO: Use matplotlib; the same as simulationJM.py '''
-    command= objCOMC.plot(moParams.getModelOutputs())
+    command= objCOMC.plot(['bus4.p.vr'])
     OMPython.execute(command)
     print command
     

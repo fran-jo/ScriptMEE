@@ -60,18 +60,17 @@ class OMCModelParams:
     inputs= {}
     outputs= {}
     
-    def __init__(self, _path, _modelFile):
+    def __init__(self, _modelFile):
         '''
         Constructor
         '''
-        self.path= _path
         self.modelfile= _modelFile
     
     def loadModelValues(self):
         '''
         Load input values to initialize the model and loads output attributes to be plotted
         '''         
-        fitxer= self.path+ self.modelfile
+        fitxer= self.modelfile
         fitxer= fitxer.replace('\\','/') #name of properties file
         readingMode= 'r'
         # loading properties into memory
