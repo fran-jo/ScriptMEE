@@ -22,3 +22,10 @@ modelName=SmarTSLab.Models.smibwbuseswfault
 libraryFile=PowerSystems.mo
 outputPath=C:\Users\fragom\PhD_CIM\Modelica\Models\Results\OpenModelica
 modelValues=smibwbuseswfault.properties
+
+More examples
+C:\Users\fragom\iTESLA\itesla-modelica-smarts_lab\NetworksKTH\System SMIB\Modelica
+System_SMIB.mo
+Works with PowerSystems library
+C:\Users\fragom\iTESLA\itesla_modelica\PowerSystems_Lib
+PowerSystems.mo

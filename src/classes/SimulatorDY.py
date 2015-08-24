@@ -56,7 +56,7 @@ class SimulatorDY(object):
         self.setStopTime(1)
         self.setTolerance(1E-6)
         self.setTimeOut(-1)
-        self._MODELICA_EXE= 'dymola'
+        self._MODELICA_EXE= 'Dymola'
         self._exitSimulator = True
         self._showGUI= False
     

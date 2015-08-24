@@ -9,9 +9,11 @@ from classes.ModelParameters import OMCModelParams
 import classes.SimulationConfigOMC as cfg
 import classes.CommandOMC as comc
 import OMPython
-from modelicares import SimRes
-import classes.SignalMeasurement as signal
-import classes.FormatMeasurement as fm
+# from modelicares import SimRes
+# import classes.SignalMeasurement as signal
+# import classes.FormatMeasurement as fm
+import matplotlib.pyplot as plt # plot library
+from classes import PhasorMeasH5
 
 def main(argv):
     ''' Loading simulations resources. Parameters related to models to be simulated and libraries'''
@@ -65,23 +67,31 @@ def main(argv):
     print('Simulation')
     print (toc - tic) #elapsed time in seconds
     
-    '''TODO: Use Signal and PhasorMeasH5 from ScriptMAE '''
     # build file path with outputpath, using the ModelicaRes to read the .mat file
-    simResult= outPath+ '/'+ resultfile
-    simulationOutput = SimRes(simResult)
-#     print len(simulationOutput.get_values('bus1.v'))
-    measurement= signal.SignalMeasurement(len(simulationOutput.get_values('time')))
-    measurement.add_Samples(simulationOutput.get_values('time'))
-    measurement.add_SignalPhaseB(simulationOutput.get_values('bus4.p.vr'), [])
-    ''' Store outputs into HDF5 format '''
-    parser= fm.FormatMeasurement(outPath, len(simulationOutput.get_values('time')))
-    parser.h5_format_Signal(measurement,'samples')
-    parser.h5_format_Signal(measurement,'voltage')
-    parser.h5_endFormat()
-    ''' TODO: Use matplotlib; the same as simulationJM.py '''
-    command= objCOMC.plot(['bus4.p.vr'])
-    OMPython.execute(command)
-    print command
+    resultmat= outPath+ '/'+ resultfile
+    resulth5= outPath+ '/'+ 'SimulationOutputs.h5'
+    h5pmu= PhasorMeasH5.PhasorMeasH5([outPath,resulth5,resultmat])
+    h5pmu.set_senyalRect("bus4.p.vr","bus4.p.vi")
+    # save meas to h5 file   
+    h5pmu.create_h5('bus4')
+    h5pmu.save_h5('V')
+   
+    # plot the results, this will be deleted and integrated in the JAVA GUI
+    plt.figure(1)
+#     plt.plot(result['time'], result[model.outputParams[0]],result['time'], result[model.outputParams[1]])
+    plt.plot(h5pmu.get_senyal().get_sampleTime(), h5pmu.get_senyal().get_signalReal())
+#     plt.plot(t, x1, t, x2)
+#     plt.legend((model.outputParams[0],model.outputParams[1]))
+    plt.legend('bus4.p.vr')
+#     plt.legend(('x1','x2'))
+    plt.title('SMIB 1 Generator Fault at bus 4')
+    plt.ylabel('Voltage (V)')
+    plt.xlabel('Time (s)')
+    plt.show()
+    
+#     command= objCOMC.plot(['bus4.p.vr'])
+#     OMPython.execute(command)
+#     print command
     
 if __name__ == '__main__':
     main(sys.argv[1:])

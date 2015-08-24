@@ -9,8 +9,8 @@ from pymodelica import compile_fmu
 from pyfmi import load_fmu
 from classes.ModelParameters import JMModelParams
 import matplotlib.pyplot as plt # plot library
-import classes.SignalMeasurement as signal
-import classes.FormatMeasurement as fm
+# import classes.SignalMeasurement as signal
+# import classes.FormatMeasurement as fm
 import classes.SimulationProperties as sp
 import classes.SimulationConfigJM as cfg
 
