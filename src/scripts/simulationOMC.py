@@ -4,39 +4,31 @@ Created on 5 apr 2014
 @author: fragom
 '''
 import sys,timeit
-import classes.SimulationProperties as sp
-from classes.ModelParameters import OMCModelParams
+import classes.SimulationResources as sp
+from classes.OutputModelVar import OutputModelVar
 import classes.SimulationConfigOMC as cfg
 import classes.CommandOMC as comc
 import OMPython
-# from modelicares import SimRes
-# import classes.SignalMeasurement as signal
-# import classes.FormatMeasurement as fm
-import matplotlib.pyplot as plt # plot library
-from classes import PhasorMeasH5
+import matplotlib.pyplot as plt
+from classes.StreamH5File import OutputH5Stream
 
 def main(argv):
     ''' Loading simulations resources. Parameters related to models to be simulated and libraries'''
-    obj= sp.SimulationOMCProperties(sys.argv[1])
+    obj= sp.SimulationResourcesOMC(sys.argv[1])
     moPath= obj.getModelPath()
     libPath= obj.getLibraryPath()
     moFile= obj.getModelFile()
     libFile= obj.getLibraryFile()
     moModel= obj.getModelName()
-    moInput= obj.getModelValuesFile()
+#     moInput= obj.getModelValuesFile()
     ''' loading the path to store the results '''
     outPath= obj.getOutputPath()
     ''' Loading configuration values for the simulator solver '''
     config= cfg.SimulationConfigOMC(sys.argv[2])
     simOptions= config.setSimOptions()
-    ''' Loading input and output attributes values for the model '''
-    moParams= OMCModelParams( moInput)
-    moParams.loadModelValues()
-    
-    # routine to initialize values from power flow solution
-#     model.getInitNames_Dymola(moInputFile, 186)
-#     model.getInitValues_Dymola(moInputFile, 186)
-#     initParams= model.setInitValues_OM()
+    ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
+    moOutputs= OutputModelVar(sys.argv[3])
+    moOutputs.load_varList()
 
     tic= timeit.default_timer()
     objCOMC= comc.CommandOMC()
@@ -52,7 +44,8 @@ def main(argv):
     print '2) Command', command
     success= OMPython.execute(command)
     if (success):
-        command= objCOMC.simulate(moModel, simOptions, moParams.getModelInputs())
+        ''' TODO: parametrized the input values, in case they are needed for the model '''
+        command= objCOMC.simulate(moModel, simOptions, 'vf1=0.1,pm1=0.001')
 #         command= objCOMC.simulate(moModel, simOptions, False)
         print '3) Command', command
         result= OMPython.execute(command)
@@ -70,21 +63,28 @@ def main(argv):
     # build file path with outputpath, using the ModelicaRes to read the .mat file
     resultmat= outPath+ '/'+ resultfile
     resulth5= outPath+ '/'+ 'SimulationOutputs.h5'
-    h5pmu= PhasorMeasH5.PhasorMeasH5([outPath,resulth5,resultmat])
-    h5pmu.set_senyalRect("bus4.p.vr","bus4.p.vi")
-    # save meas to h5 file   
-    h5pmu.create_h5('bus4')
-    h5pmu.save_h5('V')
-   
+    # create .h5 for writing
+    h5pmu= OutputH5Stream([outPath,resulth5,resultmat])
+    h5pmu.open_h5()
+    print moOutputs.get_varList()
+    for n,v in moOutputs.get_varList():
+        modelSignal= v.split(',')
+        nameComponent= n.split('.')[0]
+        nameMeasurement= n.split('.')[1]
+        h5pmu.set_senyalRect(n, modelSignal[0],modelSignal[1])
+        h5pmu.save_h5(nameComponent, nameMeasurement) 
+    h5pmu.close_h5()
+    
+    ''' TODO: parameterize these part of the script, allow user select which variable/s to plot '''
     # plot the results, this will be deleted and integrated in the JAVA GUI
     plt.figure(1)
 #     plt.plot(result['time'], result[model.outputParams[0]],result['time'], result[model.outputParams[1]])
-    plt.plot(h5pmu.get_senyal().get_sampleTime(), h5pmu.get_senyal().get_signalReal())
+    plt.plot(h5pmu.get_senyal('bus3.V').get_sampleTime(), h5pmu.get_senyal('bus3.V').get_signalReal())
 #     plt.plot(t, x1, t, x2)
 #     plt.legend((model.outputParams[0],model.outputParams[1]))
-    plt.legend('bus4.p.vr')
+    plt.legend('bus3.V')
 #     plt.legend(('x1','x2'))
-    plt.title('SMIB 1 Generator Fault at bus 4')
+    plt.title('SMIB 1 Generator Fault at bus 3')
     plt.ylabel('Voltage (V)')
     plt.xlabel('Time (s)')
     plt.show()

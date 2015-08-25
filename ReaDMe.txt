@@ -29,3 +29,7 @@ System_SMIB.mo
 Works with PowerSystems library
 C:\Users\fragom\iTESLA\itesla_modelica\PowerSystems_Lib
 PowerSystems.mo
+
+Building executable 
+Directory of scripts - C:\Users\fragom\PhD_CIM\PYTHON\ScriptMEE\src\scripts
+Directory of python engine - C:\IDE\Python27

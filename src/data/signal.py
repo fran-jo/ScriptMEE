@@ -17,6 +17,7 @@ class Signal(object):
         self.csamples= 0
         self.csignal_cmp = []
         self.ccomponent= ''
+        self.cvariable= ''
 
     def get_csamples(self):
         ''' return the number of samples of the singal '''
@@ -50,6 +51,10 @@ class Signal(object):
 
     def get_ccomponent(self):
         ''' returns the name of the component which the signal belongs to '''
+        return self.ccomponent 
+    
+    def get_cvariable(self):
+        ''' returns the name of the variable which the signal belongs to '''
         return self.ccomponent  
 
 
@@ -64,10 +69,13 @@ class Signal(object):
         self.csignal_cmp= [(s,r,i) for s,r,i in zip(_samples, _valueR, _valueI)]
         self.csamples= len(self.csignal_cmp)
 
-
     def set_ccomponent(self, value):
         ''' set the name of the component which the signal belongs to '''
         self.ccomponent = value
+        
+    def set_cvariable(self, value):
+        ''' set the name of the variable which the signal belongs to '''
+        self.cvariable = value
 
 
     def del_csamples(self):

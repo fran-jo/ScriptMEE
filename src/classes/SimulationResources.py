@@ -8,7 +8,7 @@ This information is stored in the correspondence .properties file
 
 import os
 
-class SimulationProperties(object):
+class SimulationResources(object):
     '''
     modelPath=''
     libraryPath=''
@@ -64,7 +64,7 @@ class SimulationProperties(object):
         return outputDir
     
     
-class SimulationJMProperties(SimulationProperties):
+class SimulationResourcesJM(SimulationResources):
     '''
     modelInputs=''
     modelOutputs=''
@@ -72,7 +72,7 @@ class SimulationJMProperties(SimulationProperties):
     def getModelValuesFile(self):
         return self.properties['modelValues'][:-1]
     
-class SimulationOMCProperties(SimulationProperties):
+class SimulationResourcesOMC(SimulationResources):
     '''
     modelInputs=''
     modelOutputs=''
