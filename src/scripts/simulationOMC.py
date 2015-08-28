@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from classes.StreamH5File import OutputH5Stream
 
 def main(argv):
+    ''' TODO: organize code in functions '''
     ''' Loading simulations resources. Parameters related to models to be simulated and libraries'''
     obj= sp.SimulationResourcesOMC(sys.argv[1])
     moPath= obj.getModelPath()
@@ -65,28 +66,39 @@ def main(argv):
     resulth5= outPath+ '/'+ 'SimulationOutputs.h5'
     # create .h5 for writing
     h5pmu= OutputH5Stream([outPath,resulth5,resultmat])
-    h5pmu.open_h5()
-    print moOutputs.get_varList()
-    for n,v in moOutputs.get_varList():
-        modelSignal= v.split(',')
-        nameComponent= n.split('.')[0]
-        nameMeasurement= n.split('.')[1]
-        h5pmu.set_senyalRect(n, modelSignal[0],modelSignal[1])
+    h5pmu.open_h5()    
+    for meas, var in moOutputs.get_varList():
+        modelSignal= var.split(',')
+        nameComponent= meas.split('.')[0]
+        nameMeasurement= meas.split('.')[1]
+        h5pmu.set_senyalRect(meas, modelSignal[0], modelSignal[1])
         h5pmu.save_h5(nameComponent, nameMeasurement) 
     h5pmu.close_h5()
     
-    ''' TODO: parameterize these part of the script, allow user select which variable/s to plot '''
-    # plot the results, this will be deleted and integrated in the JAVA GUI
+    count= 0
+    indexMapping={}
+    for i, meas in enumerate(moOutputs.get_nameVarList()):
+        print '[%d] %s' % (i, meas)
+        indexMapping[count]= i
+        count+= 1
+    try:
+        value= raw_input("Select which variable do you want to plot: ")
+        lindex = value.split()
+    except ValueError:
+        print "Mal! Mal! Mal! Verdadera mal! Por no decir borchenoso!" 
+    values= []
+    for idx in lindex:  
+        idx= int(idx)
+        values.append(moOutputs.get_nameVarList()[indexMapping[idx]])
+    
     plt.figure(1)
-#     plt.plot(result['time'], result[model.outputParams[0]],result['time'], result[model.outputParams[1]])
-    plt.plot(h5pmu.get_senyal('bus3.V').get_sampleTime(), h5pmu.get_senyal('bus3.V').get_signalReal())
-#     plt.plot(t, x1, t, x2)
-#     plt.legend((model.outputParams[0],model.outputParams[1]))
-    plt.legend('bus3.V')
-#     plt.legend(('x1','x2'))
-    plt.title('SMIB 1 Generator Fault at bus 3')
+    for meas in values: 
+        lasenyal= h5pmu.get_senyal(meas) 
+        plt.plot(lasenyal.get_sampleTime(), lasenyal.get_signalReal())
+    plt.legend(values)
     plt.ylabel('Voltage (V)')
     plt.xlabel('Time (s)')
+    plt.grid(b=True, which='both')
     plt.show()
     
 #     command= objCOMC.plot(['bus4.p.vr'])

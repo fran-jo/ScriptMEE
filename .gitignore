@@ -1,2 +1,9 @@
 *.pyc
 .settings/org.eclipse.ltk.core.refactoring.prefs
+*.c
+SmarTSLab.Models.smibwbuseswfault.exe
+*.libs
+*.makefile
+SmarTSLab.Models.smibwbuseswfault.o
+*.o
+*.h

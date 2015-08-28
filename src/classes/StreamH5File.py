@@ -61,13 +61,24 @@ class StreamH5File(object):
     def set_senyalRect(self, _variable, _nameR, _nameI):
         ''' set a signal in complex form, real+imaginary '''
         csenyal= signal.Signal()
-        csenyal.set_signalRect(self.cmatfile['time'], self.cmatfile[_nameR], self.cmatfile[_nameI])
+        if (_nameI != []):
+            csenyal.set_signalRect(self.cmatfile['time'], self.cmatfile[_nameR], self.cmatfile[_nameI])
+        else:
+            ''' array of 0 of the same length as samples '''
+            emptyarray= [0 for x in self.cmatfile['time']]
+            csenyal.set_signalRect(self.cmatfile['time'], self.cmatfile[_nameR], emptyarray)
+            
         self.dsenyal[_variable]= csenyal
         
     def set_senyalPolar(self, _variable, _nameM, _nameP):
         ''' set a signal in polar form, magnitude + angle '''
         csenyal= signal.SignalPMU()
-        self.csenyal.set_signalPolar(self.cmatfile['time'], self.cmatfile[_nameM], self.cmatfile[_nameP])
+        if (_nameP != []):
+            csenyal.set_signalPolar(self.cmatfile['time'], self.cmatfile[_nameM], self.cmatfile[_nameP])
+        else:
+            ''' array of 0 of the same length as samples '''
+            emptyarray= [0 for x in self.cmatfile['time']]
+            csenyal.set_signalPolar(self.cmatfile['time'], self.cmatfile[_nameM], emptyarray)
         self.dsenyal[_variable]= csenyal
         
     def del_senyal(self):
@@ -162,8 +173,8 @@ class OutputH5Stream(StreamH5File):
             column+= 1
             self.cdataset[:,column]= lasenyal.get_signalPhase()
         else:
-            self.cdataset["unit"]= 'p.u.'
-            self.cdataset["coord"]= 'complex'  
+            self.cdataset.attrs["unit"]= 'p.u.'
+            self.cdataset.attrs["coord"]= 'complex'  
             self.cdataset[:,column]= lasenyal.get_signalReal()
             column+= 1
             self.cdataset[:,column]= lasenyal.get_signalImag()
