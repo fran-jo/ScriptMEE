@@ -63,5 +63,4 @@ class SimulationConfigOMC:
 #                     elif k == "outputFormat":
 #                         v = "\"" + str(v).lower() + '\"'
                     simulate_options = simulate_options + "," + str(k) + "=" + str(v)
-        print simulate_options
         return simulate_options

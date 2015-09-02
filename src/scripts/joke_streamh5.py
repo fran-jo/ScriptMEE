@@ -19,7 +19,6 @@ if __name__ == '__main__':
     # create .h5 for writing
     h5pmu= OutputH5Stream([outPath,resulth5,resultmat])
     h5pmu.open_h5()
-    ''' TODO: try these algorithm with one variable name, multiple variable name in properties '''
     for meas, var in moOutputs.get_varList():
 #         print 'meas ', meas
 #         print 'var ', var
@@ -54,12 +53,10 @@ if __name__ == '__main__':
         values.append(moOutputs.get_nameVarList()[indexMapping[idx]])
     print 'option ', values
     
-    ''' TODO: be sure to print the signals we have selected '''
     # plot the results, this will be deleted and integrated in the JAVA GUI
     fig= plt.figure(1)
     ax = fig.gca()
 #     plt.plot(result['time'], result[model.outputParams[0]],result['time'], result[model.outputParams[1]])
-    ''' TODO: change API to get multiple signals '''
     for meas in values: 
         lasenyal= h5pmu.get_senyal(meas) 
         plt.plot(lasenyal.get_sampleTime(), lasenyal.get_signalReal())
