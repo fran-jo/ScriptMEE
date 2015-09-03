@@ -75,7 +75,7 @@ class Simulation():
         resultmat= self.outPath+ '/'+ _resultfile
         resulth5= self.outPath+ '/'+ 'SimulationOutputs.h5'
         # create .h5 for writing
-        h5pmu= OutputH5Stream([self.outPath,resulth5,resultmat])
+        h5pmu= OutputH5Stream('omc', [self.outPath,resulth5,resultmat])
         h5pmu.open_h5()    
         for meas, var in self.outputs.get_varList():
             modelSignal= var.split(',')
@@ -93,7 +93,7 @@ class Simulation():
     def plotOutputs(self, _h5data):
         count= 0
         indexMapping={}
-        for i, meas in enumerate(self.outputs.get_nameVarList()):
+        for i, meas in enumerate(self.outputs.get_varNames()):
             print '[%d] %s' % (i, meas)
             indexMapping[count]= i
             count+= 1
@@ -105,8 +105,7 @@ class Simulation():
         values= []
         for idx in lindex:  
             idx= int(idx)
-            values.append(self.outputs.get_nameVarList()[indexMapping[idx]])
-        
+            values.append(self.outputs.get_varNames()[indexMapping[idx]])
         plt.figure(1)
         for meas in values: 
             lasenyal= _h5data.get_senyal(meas) 

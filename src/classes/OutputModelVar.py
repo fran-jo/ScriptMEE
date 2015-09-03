@@ -27,7 +27,7 @@ class OutputModelVar(object):
                 namevar= line.split('=')
                 self.outputs[namevar[0]]= namevar[1][:-1]
     
-    def get_nameVarList(self):
+    def get_varNames(self):
         ''' returns the variable name from the component.
         This name corresponds to a readable name for the user, it is not the variable name '''
         return self.outputs.keys()
