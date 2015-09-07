@@ -6,7 +6,7 @@ Created on 4 apr 2014
 import os, sys, timeit
 from classes.SimulatorDY import SimulatorDY
 import classes.SimulationConfigDY as simconfig
-from buildingspy.io.outputfile import Reader
+# from buildingspy.io.outputfile import Reader
 import classes.SimulationResources as simsource
 import matplotlib.pyplot as plt
 from classes.StreamH5File import OutputH5Stream

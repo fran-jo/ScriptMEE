@@ -1,35 +1,31 @@
-Loading files into OMC
-loadModel(Modelica)
-loadFile("C:/Users/fragom/PhD_CIM/Modelica/Models/Library/PowerSystems.mo")
-loadFile("C:/Users/fragom/PhD_CIM/Modelica/Models/SmarTSLab.mo")
-readSimulationResultVars("C:/Users/fragom/PhD_CIM/Modelica/Models/Results/OpenModelica/SmarTSLab.Models.smibwbuseswfault_res.mat")
-readSimulationResultVars("SmarTSLab.Models.smibwbuseswfault_res.mat")
-val(pwLine4.p.vi,0.2) - variable y tiempo / para plot solo el nombre de la variable
+Script running with Python 2.7.x
+Dependencies
+	- matplolib
+	- numpy
+	- h5
+	- ompython
 
-Resources for simulation ieee9_bus
-modelPath=C:\Users\fragom\PhD_CIM\Modelica\ieee_9bus\
-libraryPath=C:\Users\fragom\PhD_CIM\Modelica\Models\Library\
-modelFile=IEEENetworks.mo
-modelName=IEEENetworks.IEEE_9Bus
-libraryFile=PowerSystems.mo
-outputPath=C:\Users\fragom\PhD_CIM\Modelica\Models\Results\OpenModelica
+Structure of the project
+1. ROOT_FOLDER/
+2. ROOT_FOLDER/config/
+3. ROOT_FOLDER/models/
+4. ROOT_FOLDER/src/classes/
+5. ROOT_FOLDER/src/data/
+6. ROOT_FOLDER/src/script/
 
-Resources for simulation smibwbuseswfault
-modelPath=C:\Users\fragom\PhD_CIM\Modelica\Models\
-libraryPath=C:\Users\fragom\PhD_CIM\Modelica\Models\Library\
-modelFile=SmarTSLab.mo
-modelName=SmarTSLab.Models.smibwbuseswfault
-libraryFile=PowerSystems.mo
-outputPath=C:\Users\fragom\PhD_CIM\Modelica\Models\Results\OpenModelica
-modelValues=smibwbuseswfault.properties
+Folder 2) stores .properties files with information about:
+	a) the models to simulate,
+	b) basic configuration for compilers
 
-More examples
-C:\Users\fragom\iTESLA\itesla-modelica-smarts_lab\NetworksKTH\System SMIB\Modelica
-System_SMIB.mo
-Works with PowerSystems library
-C:\Users\fragom\iTESLA\itesla_modelica\PowerSystems_Lib
-PowerSystems.mo
+Folder 3) contains .properties files with the names of variables that need to be stored and plotted
+	i.e. smib2lwfault_varList.properties
 
-Building executable 
-Directory of scripts - C:\Users\fragom\PhD_CIM\PYTHON\ScriptMEE\src\scripts
-Directory of python engine - C:\IDE\Python27
+Folder 6) contains the three main scripts of the project
+	simulationDY.py for simulations using Dymola compiler
+	simulationJM.py for simulations using JModelica compiler (does not work - in development)
+	simulationOMC.py for simulations using OpenModelica compiler
+	
+Each script need three input files, in this order:
+	simParametersXX.properties
+	simConfigurationXX.properties	
+	<nameModel>_varList.properties
