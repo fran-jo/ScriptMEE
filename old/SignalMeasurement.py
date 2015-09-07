@@ -5,9 +5,6 @@ Created on 24 jan 2014
 '''
 
 class SignalMeasurement:
-    '''
-    TODO: Manage both Modelica outputs: 1) from Dymola; 2) from OpenModelica, 
-    '''
     
     def __init__(self, _dim):
         '''
