@@ -17,7 +17,8 @@ class StreamH5File(object):
     '''
     ch5file= None
     cgroup= None
-    cdataset= None
+    ndataset= None
+    vdataset= None
 
     def __init__(self, _compiler, _params):
         '''
@@ -56,11 +57,11 @@ class StreamH5File(object):
         del self.cdataset
 
         
-    def get_senyal(self, _variable):
+    def get_senyal(self, _measurement):
         ''' return signal object '''
-        return self.dsenyal[_variable]
+        return self.dsenyal[_measurement]
 
-    def set_senyalRect(self, _variable, _nameR, _nameI):
+    def set_senyalRect(self, _measurement, _nameR, _nameI):
         ''' set a signal in complex form, real+imaginary '''
         if self.compiler== 'omc': 
             nameVarTime= 'time' 
@@ -74,9 +75,9 @@ class StreamH5File(object):
             emptyarray= [0 for x in self.cmatfile[nameVarTime]]
             csenyal.set_signalRect(self.cmatfile[nameVarTime], self.cmatfile[_nameR], emptyarray)
             
-        self.dsenyal[_variable]= csenyal
+        self.dsenyal[_measurement]= csenyal
         
-    def set_senyalPolar(self, _variable, _nameM, _nameP):
+    def set_senyalPolar(self, _measurement, _nameM, _nameP):
         ''' set a signal in polar form, magnitude + angle '''
         if self.compiler== 'omc': 
             nameVarTime= 'time' 
@@ -89,7 +90,7 @@ class StreamH5File(object):
             ''' array of 0 of the same length as samples '''
             emptyarray= [0 for x in self.cmatfile[nameVarTime]]
             csenyal.set_signalPolar(self.cmatfile[nameVarTime], self.cmatfile[_nameM], emptyarray)
-        self.dsenyal[_variable]= csenyal
+        self.dsenyal[_measurement]= csenyal
         
     def del_senyal(self):
         del self.csenyal
@@ -124,19 +125,31 @@ class InputH5Stream(StreamH5File):
         ''' Opens and existing .h5 file in reading mode '''
         self.ch5file= h5.File(self.cfileName, 'r')
          
-    def load_h5(self, _component, _variable):
-        ''' Loads signal data from a specific variable form a specific component 
+    def load_h5(self, _network, _component, _variable):
+        ''' 
+        Loads signal data from a specific variable form a specific component 
+        _network name of the entire network model or area inside the model
         _component is the name of the component we are working with
-        _variable is the name of the variable that contains signal data, from the specified component '''
+        _variable is the name of the variable that contains signal data, from the specified component 
+        '''
         # load data into internal dataset
-        self.cgroup= self.ch5file[_component]
-        self.cdataset= self.cgroup[_variable]
-        if self.cdataset.attrs['coord']== 'polar':
-            print 'polar'
-            self.csenyal.set_signalPolar(self.cdataset[:,0], self.cdataset[:,1], self.cdataset[:,2])
-        else:
-            print 'complex'
-            self.csenyal.set_signalRect(self.cdataset[:,0], self.cdataset[:,1], self.cdataset[:,2])
+        self.cgroup= self.ch5file[_network]
+        self.vdataset= self.cgroup[_component+'_values']
+        self.ndataset= self.cgroup[_component+'_names']
+        idx= 1
+        for item in self.ndataset:
+            print idx, item
+            if (item == _variable):
+                if self.vdataset.attrs['coord']== 'polar':
+                    print 'polar'
+                    csenyal= signal.SignalPMU()
+                    csenyal.set_signalPolar(self.vdataset[:,0], self.vdataset[:,idx], self.vdataset[:,idx+1])
+                else:
+                    print 'complex'
+                    csenyal= signal.Signal()
+                    csenyal.set_signalRect(self.vdataset[:,0], self.vdataset[:,idx], self.vdataset[:,idx+1])
+                self.dsenyal[_component]= csenyal
+            idx+= 1
             
     def close_h5(self):
         self.ch5file.close()
@@ -151,43 +164,51 @@ class OutputH5Stream(StreamH5File):
         ''' Opens the h5 file in append mode '''
         self.ch5file= h5.File(self.cfileName, 'a')
         
-    def save_h5(self, _component, _variable):
+    def save_h5(self, _network, _component, _variable):
         ''' Creates the .h5, in append mode, with an internal structure.
         When created, the .h5 file contains a new group with the same name as the input parameter
+        _network name of the entire network model or area inside the model
         _component indicates the name of component where the data is collected from 
-        Saves signal data from a specific variable (input parameter). It creates an 
-        internal dataset into the current group of the current .h5. 
         _variable is the name of the signal to be saved '''
-        uDefVar= _component+ '.'+ _variable
         # create group, for each component, with attribute
         if not _component in self.ch5file:
-            self.cgroup= self.ch5file.create_group(_component)
+            self.cgroup= self.ch5file.create_group(_network)
         else:
-            self.cgroup= self.ch5file[_component]
+            self.cgroup= self.ch5file[_network]
         # create datasets
-        if not _variable in self.cgroup:
-            self.cdataset= self.cgroup.create_dataset(_variable, (self.dsenyal[uDefVar].get_csamples(),3), chunks=(100,3))
+        ds_names= _component+ '_names'
+        ds_values= _component+ '_values'
+        if not ds_names in self.cgroup:
+            self.ndataset= self.cgroup.create_dataset(ds_names, (1,))
         else:
-            self.cdataset= self.cgroup[_variable]
+            self.ndataset= self.cgroup[ds_names]
+        column= -1
+        self.ndataset[1,column]= _variable
+        # store datasets in file
+        lasenyal= self.get_senyal(_component)
+        if not ds_values in self.cgroup:
+            self.vdataset= self.cgroup.create_dataset(ds_values, 
+                        (self.dsenyal[_component].get_csamples(),), chunks=(1000,3))
+            self.vdataset[:,0]= lasenyal.get_sampleTime()
+        else:
+            self.vdataset= self.cgroup[ds_values]
 #         attr_string= 'polar'
 #         self.dataset.attrs['signalType']= attr_string
-        # store datasets in file
-        lasenyal= self.get_senyal(uDefVar)
-        self.cdataset[:,0]= lasenyal.get_sampleTime()
-        column= 1
+        '''TODO: instead of 1, the last column index Dataset.len()???'''
+        column= -2
         ''' signals can store two type of data, complex or polar, values are saved per pairs '''
         if isinstance(lasenyal, signal.SignalPMU):
-            self.cdataset.attrs["unit"]= 'p.u.'
-            self.cdataset.attrs['coord']= 'polar'  
-            self.cdataset[:,column]= lasenyal.get_signalMag()
+            self.vdataset.attrs["unit"]= 'p.u.'
+            self.vdataset.attrs['coord']= 'polar'  
+            self.vdataset[:,column]= lasenyal.get_signalMag()
             column+= 1
-            self.cdataset[:,column]= lasenyal.get_signalPhase()
+            self.vdataset[:,column]= lasenyal.get_signalPhase()
         else:
-            self.cdataset.attrs["unit"]= 'p.u.'
-            self.cdataset.attrs["coord"]= 'complex'  
-            self.cdataset[:,column]= lasenyal.get_signalReal()
+            self.vdataset.attrs["unit"]= 'p.u.'
+            self.vdataset.attrs["coord"]= 'complex'  
+            self.vdataset[:,column]= lasenyal.get_signalReal()
             column+= 1
-            self.cdataset[:,column]= lasenyal.get_signalImag()
+            self.vdataset[:,column]= lasenyal.get_signalImag()
         # guardar en attributes els noms de les variables dels components
         
     def close_h5(self):
