@@ -4,7 +4,7 @@ Created on 7 apr 2015
 @author: fragom
 '''
 from modelicares import SimRes
-from numpy import angle,absolute, dtype
+from numpy import angle,absolute
 import os, numpy
 import h5py as h5
 from data import signal
@@ -17,7 +17,8 @@ class StreamH5File(object):
     '''
     ch5file= None
     cgroup= None
-    cdataset= None
+    cdatasetNames= None
+    cdatasetValues= None
     
     def __init__(self, _params, _compiler='omc'):
         '''
@@ -66,11 +67,11 @@ class StreamH5File(object):
         del self.cdatasetValues
 
         
-    def get_senyal(self, _variable):
+    def get_senyal(self, _measurement):
         ''' return signal object '''
-        return self.dsenyal[_variable]
+        return self.dsenyal[_measurement]
 
-    def set_senyalRect(self, _variable, _nameR, _nameI):
+    def set_senyalRect(self, _measurement, _nameR, _nameI):
         ''' set a signal in complex form, real+imaginary '''
         if self.compiler== 'omc': 
             nameVarTime= 'time' 
@@ -84,9 +85,9 @@ class StreamH5File(object):
             emptyarray= [0 for x in self.cmatfile[nameVarTime]]
             csenyal.set_signalRect(self.cmatfile[nameVarTime], self.cmatfile[_nameR], emptyarray)
             
-        self.dsenyal[_variable]= csenyal
+        self.dsenyal[_measurement]= csenyal
         
-    def set_senyalPolar(self, _variable, _nameM, _nameP):
+    def set_senyalPolar(self, _measurement, _nameM, _nameP):
         ''' set a signal in polar form, magnitude + angle '''
         if self.compiler== 'omc': 
             nameVarTime= 'time' 
@@ -99,7 +100,7 @@ class StreamH5File(object):
             ''' array of 0 of the same length as samples '''
             emptyarray= [0 for x in self.cmatfile[nameVarTime]]
             csenyal.set_signalPolar(self.cmatfile[nameVarTime], self.cmatfile[_nameM], emptyarray)
-        self.dsenyal[_variable]= csenyal
+        self.dsenyal[_measurement]= csenyal
         
     def del_senyal(self):
         del self.csenyal
@@ -144,19 +145,19 @@ class InputH5Stream(StreamH5File):
         # load data into internal dataset
         self.cgroup= self.ch5file[_network]
         self.cdatasetValues= self.cgroup[_component+'_values']
-        self.cdatasetNames= self.cgroup[_component+'_items']
+        self.cdatasetNames= self.cgroup[_component+'_names']
         idx= 1
         for item in self.cdatasetNames:
             print idx, item
             if (item == _variable):
-                if self.cdataset.attrs['coord']== 'polar':
-                    print 'polar'
-                    csenyal= signal.SignalPMU()
-                    csenyal.set_signalPolar(self.cdataset[:,0], self.cdataset[:,idx], self.cdataset[:,idx+1])
-                else:
-                    print 'complex'
-                    csenyal= signal.Signal()
-                    csenyal.set_signalRect(self.cdataset[:,0], self.cdataset[:,idx], self.cdataset[:,idx+1])
+#                 if self.cdataset.attrs['coord']== 'polar':
+#                     print 'polar'
+#                     csenyal= signal.SignalPMU()
+#                     csenyal.set_signalPolar(self.cdataset[:,0], self.cdataset[:,idx], self.cdataset[:,idx+1])
+#                 else:
+#                     print 'complex'
+                csenyal= signal.Signal()
+                csenyal.set_signalRect(self.cdataset[:,0], self.cdataset[:,idx], self.cdataset[:,idx+1])
                 self.dsenyal[_component]= csenyal
             idx+= 1
             
@@ -207,7 +208,6 @@ class OutputH5Stream(StreamH5File):
                 column+= 1
                 self.cdatasetValues[:,column]= lasenyal.get_signalImag()
             column+= 1
-        # guardar en attributes els noms de les variables dels components
     
     def save_h5Names(self, _component, _variable):
         ''' Creates the .h5, in append mode, with an internal structure for signal names.
@@ -227,12 +227,12 @@ class OutputH5Stream(StreamH5File):
         row= 1
         for name in self.dsenyal.keys():
             print row, ' ', str(name)
-            self.datasetNames[:,row]= str(name)
+            self.cdatasetNames[:,row]= str(name)
             if isinstance(self.dsenyal[_variable], signal.SignalPMU):
                 metaSignal= [str(name), u"p.u.", u"polar"]
             else:
                 metaSignal= [str(name), u"p.u.", u"complex"]   
-            self.datasetNames[:,row]= metaSignal
+            self.cdatasetNames[:,row]= metaSignal
             row+= 1
             
     def close_h5(self):
