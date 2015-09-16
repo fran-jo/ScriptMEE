@@ -10,6 +10,7 @@ import os
 
 class SimulationResources(object):
     '''
+    classdocs
     modelPath=''
     libraryPath=''
     modelFile=''
@@ -17,65 +18,83 @@ class SimulationResources(object):
     modelName=''
     outputPath= ''
     '''
-    fitxer= ''
-    readingMode= ''
-    properties= {}
+    properties= {} 
 
     def __init__(self, params):
         '''
         Constructor
+        params[0]: .properties file
         '''
-        self.fitxer= params.replace('\\','/') #name of properties file
+        self.propertyF= params.replace('\\','/')
         self.readingMode= 'r'
-        # loading properties into memory
-        properti = open(self.fitxer, self.readingMode)
-        for line in properti:
-            option= line.split('=')
-            self.properties[option[0]]= option[1]
+        self.properties= {'default':'property'}
         
-    def getModelPath(self):
-        modelPath= self.properties['modelPath'][:-1]
-        separateValues= modelPath.split(os.sep)
-        modelPath = '/'.join(separateValues)
-        return modelPath
+    def save_Properties(self, _filename, _comment):
+        for key in self.properties:
+            self.propertyF.setProperty(key, self.properties[key])
+        fle= open(_filename,'w')
+        self.propertyF.store(fle, _comment)
     
-    def getLibraryPath(self):
-        libPath= self.properties['libraryPath'][:-1]
-        separateValues= libPath.split(os.sep)
-        libPath = '/'.join(separateValues)
-        return libPath
+    def load_Properties(self, _filename):
+        fle= open(_filename,'r')
+        self.propertyF.load(fle)
+        for key in self.properties:
+            self.properties[key]= str(self.propertyF.getProperty(key))
+#         print self.properties
     
-    def getModelFile(self):
-        return self.properties['modelFile'][:-1]
+    def get_Properties(self):
+        '''
+        This function works after storing or loading properties into the dictionary object
+        '''
+        return self.properties.values()
+
+    def get_modelFile(self):
+        fullfile= self.properties['modelPath']+ '/'+ self.properties['modelName']
+        return fullfile
     
-    def getLibraryFile(self):
-        return self.properties['libraryFile'][:-1]
+    def get_libraryFile(self):
+        fulllib= self.properties['libraryPath']+ '/'+ self.properties['libraryFile']
+        return fulllib
     
-    def getModelName(self):
-        return self.properties['modelName'][:-1]
+    def get_modelName(self):
+        return self.properties['modelName']
     
-    def getSimulationOptions(self):
-        return self.properties['simulationOptions']
+    def get_outputPath(self):
+        return self.properties['outputPath']
+    #
+     
+    def set_modelPath(self, _modelPath):
+        separateValues= _modelPath.split(os.sep)
+        modelPath = '/'.join(separateValues[:-1])
+        self.properties['modelPath']= modelPath
+#         print modelPath
     
-    def getOutputPath(self):
-        outputDir= self.properties['outputPath'][:-1]
-        separateValues= outputDir.split(os.sep)
-        outputDir = '/'.join(separateValues)
-        return outputDir
-    
-    
-class SimulationResourcesJM(SimulationResources):
-    '''
-    modelInputs=''
-    modelOutputs=''
-    '''
-    def getModelValuesFile(self):
-        return self.properties['modelValues'][:-1]
-    
-class SimulationResourcesOMC(SimulationResources):
-    '''
-    modelInputs=''
-    modelOutputs=''
-    '''
-    def getModelValuesFile(self):
-        return self.properties['modelValues'][:-1]
+    def set_libraryPath(self, _libraryPath):
+        separateValues= _libraryPath.split(os.sep)
+        libraryPath = '/'.join(separateValues[:-1])
+        self.properties['libraryPath']= libraryPath
+#         print libraryPath
+        
+    def set_modelFile(self, _modelFile):
+        separateValues= _modelFile.split(os.sep)
+        modelFile = separateValues[-1]
+        self.properties['modelFile']= modelFile
+#         print modelFile
+        
+    def set_libraryFile(self, _libraryFile):
+        separateValues= _libraryFile.split(os.sep)
+        libraryFile = separateValues[-1]
+        self.properties['libraryFile']= libraryFile
+#         print libraryFile
+       
+    def set_modelName(self, _modelName):
+        separateValues= _modelName.split(os.sep)
+        modelName = separateValues[-1]
+        self.properties['modelName']= modelName
+#         print modelName
+         
+    def set_outputPath(self, _outputPath):
+        separateValues= _outputPath.split(os.sep)
+        outputPath = '/'.join(separateValues)
+        self.properties['outputPath']= outputPath
+#         print outputPath

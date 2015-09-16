@@ -60,7 +60,6 @@ class Simulation():
         '''TODO: study the units of elapsed time '''
     
     def saveOutputs(self):
-        '''TODO: Store simulations results into h5 file '''
         resultmat= self.moModel.split('.')[-1]
     #     print 'resultFile:', resultFile
         resultmat+= '.mat'
@@ -68,7 +67,6 @@ class Simulation():
         resulth5= self.outPath+ '/'+ 'SimulationOutputs.h5'
     #     print 'os.getcwd():', os.getcwd()
 #         output= Reader(resultFile, "dymola")
-#         ''' TODO: parametrizar las variables que queremos guardar, OutputModelVar '''
 #         varNames= output.varNames('bus*.v')
         h5pmu= OutputH5Stream('dymola', [self.outPath, resulth5, resultmat])
         h5pmu.open_h5()    
@@ -80,7 +78,8 @@ class Simulation():
                 h5pmu.set_senyalRect(meas, modelSignal[0], modelSignal[1])
             else:
                 h5pmu.set_senyalRect(meas, modelSignal[0], [])
-            h5pmu.save_h5(nameComponent, nameMeasurement) 
+        h5pmu.save_h5Names(nameComponent, meas) 
+        h5pmu.save_h5Values(nameComponent, meas) 
         h5pmu.close_h5()
         ''' object h5 file with result data'''
         return h5pmu

@@ -22,7 +22,7 @@ class Simulation():
         sys.argv[3]: file containing the name of outputs of the model to be saved in h5 and plotted
         '''
         ''' Loading simulations resources. Parameters related to models to be simulated and libraries'''
-        self.sources= simsource.SimulationResourcesOMC(sys.argv[1])
+        self.sources= simsource.SimulationResources(sys.argv[1])
         ''' Loading configuration values for the simulator solver '''
         self.config= simconfig.SimulationConfigOMC(sys.argv[2])
         ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
@@ -75,17 +75,20 @@ class Simulation():
         resultmat= self.outPath+ '/'+ _resultfile
         resulth5= self.outPath+ '/'+ 'SimulationOutputs.h5'
         # create .h5 for writing
-        h5pmu= OutputH5Stream('omc', [self.outPath,resulth5,resultmat])
-        h5pmu.open_h5()    
+        h5pmu= OutputH5Stream([self.outPath,resulth5,resultmat], 'omc')
+        h5pmu.open_h5(self.moModel,)    
+        '''This loop to store output signals, for analysis and plotting, into memory'''
         for meas, var in self.outputs.get_varList():
             modelSignal= var.split(',')
             nameComponent= meas.split('.')[0]
-            nameMeasurement= meas.split('.')[1]
+#             nameMeasurement= meas.split('.')[1]
             if len(modelSignal)> 1:
                 h5pmu.set_senyalRect(meas, modelSignal[0], modelSignal[1])
             else:
                 h5pmu.set_senyalRect(meas, modelSignal[0], [])
-            h5pmu.save_h5(nameComponent, nameMeasurement) 
+        h5pmu.save_h5Names(nameComponent, meas) 
+        h5pmu.save_h5Values(nameComponent, meas) 
+        
         h5pmu.close_h5()
         ''' object h5 file with result data'''
         return h5pmu
