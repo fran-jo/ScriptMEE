@@ -24,9 +24,11 @@ class SimulationResources(object):
         '''
         Constructor
         params[0]: .properties file
+        params[1]: reading mode
         '''
-        self.propertyF= params.replace('\\','/')
-        self.readingMode= 'r'
+        '''TODO: Recuperar antiga implementacio '''
+        self.fitxer= params[0].replace('\\','/')
+        self.readingMode= params[1]
         self.properties= {'default':'property'}
         
     def save_Properties(self, _filename, _comment):
@@ -35,12 +37,12 @@ class SimulationResources(object):
         fle= open(_filename,'w')
         self.propertyF.store(fle, _comment)
     
-    def load_Properties(self, _filename):
-        fle= open(_filename,'r')
-        self.propertyF.load(fle)
-        for key in self.properties:
-            self.properties[key]= str(self.propertyF.getProperty(key))
-#         print self.properties
+    def load_Properties(self):
+        # loading properties into memory
+        properti = open(self.fitxer, self.readingMode)
+        for line in properti:
+            option= line.split('=')
+            self.properties[option[0]]= option[1]
     
     def get_Properties(self):
         '''
@@ -48,19 +50,29 @@ class SimulationResources(object):
         '''
         return self.properties.values()
 
+    def get_modelPath(self):
+        modelPath= self.properties['modelPath'][:-1]
+        separateValues= modelPath.split(os.sep)
+        modelPath = '/'.join(separateValues)
+        return modelPath
+    
+    def get_libraryPath(self):
+        libPath= self.properties['libraryPath'][:-1]
+        separateValues= libPath.split(os.sep)
+        libPath = '/'.join(separateValues)
+        return libPath
+    
     def get_modelFile(self):
-        fullfile= self.properties['modelPath']+ '/'+ self.properties['modelName']
-        return fullfile
+        return self.properties['modelFile'][:-1]
     
     def get_libraryFile(self):
-        fulllib= self.properties['libraryPath']+ '/'+ self.properties['libraryFile']
-        return fulllib
+        return self.properties['libraryFile'][:-1]
     
     def get_modelName(self):
-        return self.properties['modelName']
+        return self.properties['modelName'][:-1]
     
     def get_outputPath(self):
-        return self.properties['outputPath']
+        return self.properties['outputPath'][:-1]
     #
      
     def set_modelPath(self, _modelPath):

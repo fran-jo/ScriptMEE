@@ -148,7 +148,7 @@ class InputH5Stream(StreamH5File):
         self.cdatasetNames= self.cgroup[_component+'_names']
         idx= 1
         for item in self.cdatasetNames:
-            print idx, item
+            #print idx, item
             if (item == _variable):
 #                 if self.cdataset.attrs['coord']== 'polar':
 #                     print 'polar'
@@ -171,8 +171,8 @@ class OutputH5Stream(StreamH5File):
     1) dataset to store signal names
     2) dataset to store signal values, per pairs, column 1: re/mag; column2: im/pol 
     '''
-    def __init__(self, params, compiler):
-        super(OutputH5Stream, self).__init__(params, compiler)
+    def __init__(self, _params, _compiler):
+        super(OutputH5Stream, self).__init__(_params, _compiler)
         
     def open_h5(self, _network):
         ''' Opens the h5 file in append mode '''
@@ -215,18 +215,18 @@ class OutputH5Stream(StreamH5File):
         group of the current .h5. 
         _component indicates the name of component where the data is collected from 
         _variable is the name of the signal to be saved '''
-        print 'len ', len(self.dsenyal)+ 1
+        #print 'len ', len(self.dsenyal)+ 1
         dt = h5.special_dtype(vlen=unicode)
         if not _component+'_items' in self.cgroup:
             self.datasetNames= self.cgroup.create_dataset(_component+'_items', (3,len(self.dsenyal)+1), dtype=dt)
         else:
             self.datasetNames= self.cgroup[_component+'_items']
-        print "Dataset dataspace is", self.cdatasetNames.shape
+        #print "Dataset dataspace is", self.cdatasetNames.shape
         metaSignal= [u"sampletime", u"s",u"int"]
         self.datasetNames[:,0]= metaSignal
         row= 1
         for name in self.dsenyal.keys():
-            print row, ' ', str(name)
+            #print row, ' ', str(name)
             self.cdatasetNames[:,row]= str(name)
             if isinstance(self.dsenyal[_variable], signal.SignalPMU):
                 metaSignal= [str(name), u"p.u.", u"polar"]

@@ -1,0 +1,23 @@
+How to use SimulationResources class:
+	''' Loading simulations resources. Parameters related to models to be simulated and libraries'''
+    self.sources= simsource.SimulationResources(sys.argv[1])
+    
+    def loadSources(self):
+        ''' TODO: LOG sources files and models '''
+        self.moPath= self.sources.getModelPath()
+        self.moFile= self.sources.getModelFile()
+        self.libPath= self.sources.getLibraryPath()
+        self.libFile= self.sources.getLibraryFile()
+        self.moModel= self.sources.getModelName()
+        self.outPath= self.sources.getOutputPath()
+        self.outputs.load_varList()
+
+ 	def saveResources(self,event):
+        self.sources.set_modelPath(self.cbMoFile.selectedItem)
+        self.sources.set_modelFile(self.cbMoFile.selectedItem)
+        self.sources.set_modelName(self.cbModel.selectedItem)
+        self.sources.set_libraryPath(self.cbMoLib.selectedItem)
+        self.sources.set_libraryFile(self.cbMoLib.selectedItem)
+        self.sources.set_outputPath(self.cbOutDir.selectedItem)
+        nomfile= './config/simParameters.properties'
+        self.config.save_Properties(nomfile, 'Simulation resources')

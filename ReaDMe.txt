@@ -29,3 +29,13 @@ Each script need three input files, in this order:
 	simParametersXX.properties
 	simConfigurationXX.properties	
 	<nameModel>_varList.properties
+	
+	
+Selection of signals from h5
+the structure of the files is modelname as group
+two dataset per component (_items, _values)
+
+when selecting a signal the user will give the complete name of the signal i.e. n44.gen1.v
+with modelname, load group
+with component name, load corresponding pair of dataset
+with signal name (componentname.value), select the signal (values)

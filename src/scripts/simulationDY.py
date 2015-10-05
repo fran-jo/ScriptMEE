@@ -21,18 +21,20 @@ class Simulation():
         sys.argv[3]: file containing the name of outputs of the model to be saved in h5 and plotted
         '''
         ''' Loading simulations resources. Parameters related to models to be simulated and libraries'''
-        self.sources= simsource.SimulationResources(sys.argv[1])
+        self.sources= simsource.SimulationResources([sys.argv[1],'r'])
         ''' Loading configuration values for the simulator solver '''
         self.config= simconfig.SimulationConfigDY(sys.argv[2])
         ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
         self.outputs= OutputModelVar(sys.argv[3])
         
     def loadSources(self):
-        self.moPath= self.sources.getModelPath()
-        self.moFile= self.sources.getModelFile()
-        self.libPath= self.sources.getLibraryPath()
-        self.moModel= self.sources.getModelName()
-        self.outPath= self.sources.getOutputPath()
+        self.sources.load_Properties()
+        self.moPath= self.sources.get_modelPath()
+        self.moFile= self.sources.get_modelFile()
+        self.libPath= self.sources.get_libraryPath()
+        self.libFile= self.sources.get_libraryFile()
+        self.moModel= self.sources.get_modelName()
+        self.outPath= self.sources.get_outputPath()
         self.outputs.load_varList()
         self.simOptions= self.config.setSimOptions()
         
@@ -68,8 +70,8 @@ class Simulation():
     #     print 'os.getcwd():', os.getcwd()
 #         output= Reader(resultFile, "dymola")
 #         varNames= output.varNames('bus*.v')
-        h5pmu= OutputH5Stream('dymola', [self.outPath, resulth5, resultmat])
-        h5pmu.open_h5()    
+        h5pmu= OutputH5Stream([self.outPath, resulth5, resultmat], 'dymola')
+        h5pmu.open_h5(self.moModel)    
         for meas, name in self.outputs.get_varList():
             modelSignal= name.split(',')
             nameComponent= meas.split('.')[0]

@@ -43,6 +43,7 @@ class CommandOMC:
         return command
     
     def saveResult(self, filename, outPath):
+        '''TODO: Handle when simulation fails, no result file '''
         absFileName= ''.join(filename.split('"'))
         shutil.copy(absFileName, outPath)
         onlyFileName = absFileName.split('/')

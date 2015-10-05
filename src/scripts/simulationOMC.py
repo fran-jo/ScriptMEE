@@ -22,7 +22,7 @@ class Simulation():
         sys.argv[3]: file containing the name of outputs of the model to be saved in h5 and plotted
         '''
         ''' Loading simulations resources. Parameters related to models to be simulated and libraries'''
-        self.sources= simsource.SimulationResources(sys.argv[1])
+        self.sources= simsource.SimulationResources([sys.argv[1],'r'])
         ''' Loading configuration values for the simulator solver '''
         self.config= simconfig.SimulationConfigOMC(sys.argv[2])
         ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
@@ -31,12 +31,13 @@ class Simulation():
         
     def loadSources(self):
         ''' TODO: LOG sources files and models '''
-        self.moPath= self.sources.getModelPath()
-        self.moFile= self.sources.getModelFile()
-        self.libPath= self.sources.getLibraryPath()
-        self.libFile= self.sources.getLibraryFile()
-        self.moModel= self.sources.getModelName()
-        self.outPath= self.sources.getOutputPath()
+        self.sources.load_Properties()
+        self.moPath= self.sources.get_modelPath()
+        self.moFile= self.sources.get_modelFile()
+        self.libPath= self.sources.get_libraryPath()
+        self.libFile= self.sources.get_libraryFile()
+        self.moModel= self.sources.get_modelName()
+        self.outPath= self.sources.get_outputPath()
         self.outputs.load_varList()
         ''' TODO: LOG configuration '''
         self.simOptions= self.config.setSimOptions()
@@ -56,8 +57,8 @@ class Simulation():
         success= OMPython.execute(command)
         if (success):
             ''' TODO: parametrized the input values, in case they are needed for the model '''
-            command= objCOMC.simulate(self.moModel, self.simOptions, 'vf1=0.1,pm1=0.001')
-    #         command= objCOMC.simulate(moModel, simOptions, False)
+            #command= objCOMC.simulate(self.moModel, self.simOptions, 'vf1=0.1,pm1=0.001')
+            command= objCOMC.simulate(self.moModel, self.simOptions, False)
             print '3) Command', command
             result= OMPython.execute(command)
             print '4) Result', result
@@ -76,7 +77,7 @@ class Simulation():
         resulth5= self.outPath+ '/'+ 'SimulationOutputs.h5'
         # create .h5 for writing
         h5pmu= OutputH5Stream([self.outPath,resulth5,resultmat], 'omc')
-        h5pmu.open_h5(self.moModel,)    
+        h5pmu.open_h5(self.moModel)    
         '''This loop to store output signals, for analysis and plotting, into memory'''
         for meas, var in self.outputs.get_varList():
             modelSignal= var.split(',')
