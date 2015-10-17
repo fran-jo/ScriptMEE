@@ -190,51 +190,46 @@ class OutputH5Stream(StreamH5File):
         _variable is the name of the signal to be saved '''
         # create datasets
         if not _component+'_values' in self.cgroup:
+            ''' TODO: dataset size according to signals of the component '''
+#             self.cdatasetValues= self.cgroup.create_dataset(_component+'_values', 
+#                                                       (self.dsenyal[_component].get_csamples(),len(self.dsenyal)*2+1),
+#                                                       chunks=(100,3))
             self.cdatasetValues= self.cgroup.create_dataset(_component+'_values', 
-                                                      (self.dsenyal[_variable].get_csamples(),len(self.dsenyal)*2+1),
+                                                      (self.dsenyal[_component].get_csamples(),3),
                                                       chunks=(100,3))
         else:
             self.cdatasetValues= self.cgroup[_component+'_values']
         column= 1
         ''' signals can store two type of data, complex or polar, values are saved per pairs '''
-        for lasenyal in self.dsenyal.values():
-            self.cdatasetValues[:,0]= lasenyal.get_sampleTime()
-            if isinstance(lasenyal, signal.SignalPMU):  
-                self.cdatasetValues[:,column]= lasenyal.get_signalMag()
-                column+= 1
-                self.cdatasetValues[:,column]= lasenyal.get_signalPhase()
-            else: 
-                self.cdatasetValues[:,column]= lasenyal.get_signalReal()
-                column+= 1
-                self.cdatasetValues[:,column]= lasenyal.get_signalImag()
+        lasenyal= self.dsenyal[_component]
+        self.cdatasetValues[:,0]= lasenyal.get_sampleTime()
+        if isinstance(lasenyal, signal.SignalPMU):  
+            self.cdatasetValues[:,column]= lasenyal.get_signalMag()
             column+= 1
+            self.cdatasetValues[:,column]= lasenyal.get_signalPhase()
+        else: 
+            self.cdatasetValues[:,column]= lasenyal.get_signalReal()
+            column+= 1
+            self.cdatasetValues[:,column]= lasenyal.get_signalImag()
     
     def save_h5Names(self, _component, _variable):
         ''' Creates the .h5, in append mode, with an internal structure for signal names.
         Saves signal names from a specific model. It creates an internal dataset into the current
         group of the current .h5. 
         _component indicates the name of component where the data is collected from 
-        _variable is the name of the signal to be saved '''
-        #print 'len ', len(self.dsenyal)+ 1
+        _variable list of signal names from the _component'''
         dt = h5.special_dtype(vlen=unicode)
         if not _component+'_items' in self.cgroup:
-            self.datasetNames= self.cgroup.create_dataset(_component+'_items', (3,len(self.dsenyal)+1), dtype=dt)
+            ''' TODO: dataset size according to signals of the component '''
+            self.datasetNames= self.cgroup.create_dataset(_component+'_items', (1,len(_variable)+1), dtype=dt)
         else:
             self.datasetNames= self.cgroup[_component+'_items']
-        #print "Dataset dataspace is", self.cdatasetNames.shape
-        metaSignal= [u"sampletime", u"s",u"int"]
-        self.datasetNames[:,0]= metaSignal
+#         metaSignal= [u"sampletime", u"s", u"int"]
+        self.datasetNames[:,0]= u"sampletime"
         row= 1
-        for name in self.dsenyal.keys():
-            #print row, ' ', str(name)
+        for name in _variable:  
             self.cdatasetNames[:,row]= str(name)
-            if isinstance(self.dsenyal[_variable], signal.SignalPMU):
-                metaSignal= [str(name), u"p.u.", u"polar"]
-            else:
-                metaSignal= [str(name), u"p.u.", u"complex"]   
-            self.cdatasetNames[:,row]= metaSignal
             row+= 1
             
     def close_h5(self):
-        # close file
         self.ch5file.close()

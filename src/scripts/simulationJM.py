@@ -7,88 +7,133 @@ Created on 4 apr 2014
 import sys, timeit
 from pymodelica import compile_fmu
 from pyfmi import load_fmu
-from classes.ModelParameters import JMModelParams
 import matplotlib.pyplot as plt # plot library
 # import classes.SignalMeasurement as signal
 # import classes.FormatMeasurement as fm
-import classes.SimulationProperties as sp
-import classes.SimulationConfigJM as cfg
+import classes.SimulationResources as simsource
+import classes.SimulationConfigJM as simconfig
+from classes.OutputModelVar import OutputModelVar
+from classes.StreamH5File import OutputH5Stream
+
+class Simulation():
+    
+    def __init__(self, argv):
+        '''TODO: LOG parameters '''
+        ''' sys.argv is array of parameters 
+        sys.argv[1]: file with simulation resources, a.k.a. model file, library file, output folder,
+        sys.argv[2]: file with configuration of the simulator compiler
+        sys.argv[3]: file containing the name of outputs of the model to be saved in h5 and plotted
+        '''
+        ''' Loading simulations resources. Parameters related to models to be simulated and libraries'''
+        self.sources= simsource.SimulationResources([sys.argv[1],'r'])
+        ''' Loading configuration values for the simulator solver '''
+        self.config= simconfig.SimulationConfigJM(sys.argv[2])
+        ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
+        self.outputs= OutputModelVar(sys.argv[3])
+        
+        
+    def loadSources(self):
+        ''' TODO: LOG sources files and models '''
+        self.sources.load_Properties()
+        self.moPath= self.sources.get_modelPath()
+        self.moFile= self.sources.get_modelFile()
+        self.libPath= self.sources.get_libraryPath()
+        self.libFile= self.sources.get_libraryFile()
+        self.moModel= self.sources.get_modelName()
+        self.outPath= self.sources.get_outputPath()
+        self.outputs.load_varList()
+        ''' TODO: LOG configuration '''
+        
+    def simulate(self):
+        ''' TODO: LOG all command omc '''
+        tic= timeit.default_timer()
+        # Simulation process with JModelica
+        absolutePath= self.moPath + self.moFile
+        '''build the fmu block from the modelica model '''
+        fmu_name= compile_fmu(self.moModel, absolutePath,
+                               compiler_options = {'extra_lib_dirs':self.libPath})
+        ''' Load the model '''
+        model_fmu= load_fmu(fmu_name)
+    
+        ''' Load the list of options for the JModelica compiler '''
+        opts = model_fmu.simulate_options()
+        opts['solver']= self.config.getSolver()
+        opts['ncp']= self.config.getNcp()
+    #     for key,value in simOpt.getOptions().items():
+    #         print key,value
+    #         opts[key] = value
+        print opts
+        result = model_fmu.simulate(start_time= self.config.getStartTime(), 
+                                    final_time= self.config.getStopTime(), 
+                                    options=opts)
+    
+        toc= timeit.default_timer()
+        print 'Simulation time ', toc- tic
+        '''TODO: study the units of elapsed time '''
+        
+        return result
+    
+    def saveOutputs(self, _resultfile):
+        ''' build file path with outputpath, using the ModelicaRes to read the .mat file '''
+        resultmat= self.outPath+ '/'+ _resultfile
+        h5Name=  self.moModel+ '_&'+ 'jmodelica'+ '.h5'
+        resulth5= self.outPath+ '/'+ h5Name
+        # create .h5 for writing
+        h5pmu= OutputH5Stream([self.outPath,resulth5,resultmat], 'omc')
+        h5pmu.open_h5(self.moModel)    
+        '''This loop to store output signals, for analysis and plotting, into memory'''
+        for meas, var in self.outputs.get_varList():
+            modelSignal= var.split(',')
+            nameComponent= meas.split('.')[0]
+#             nameMeasurement= meas.split('.')[1]
+            if len(modelSignal)> 1:
+                h5pmu.set_senyalRect(meas, modelSignal[0], modelSignal[1])
+            else:
+                h5pmu.set_senyalRect(meas, modelSignal[0], [])
+        h5pmu.save_h5Names(nameComponent, meas) 
+        h5pmu.save_h5Values(nameComponent, meas) 
+        
+        h5pmu.close_h5()
+        ''' object h5 file with result data'''
+        return h5pmu
+    
+    def plotOutputs(self, _h5data):
+        count= 0
+        indexMapping={}
+        for i, meas in enumerate(self.outputs.get_varNames()):
+            print '[%d] %s' % (i, meas)
+            indexMapping[count]= i
+            count+= 1
+        try:
+            value= raw_input("Select which variable do you want to plot: ")
+            lindex = value.split()
+        except ValueError:
+            print "Mal! Mal! Mal! Verdadera mal! Por no decir borchenoso!" 
+        values= []
+        for idx in lindex:  
+            idx= int(idx)
+            values.append(self.outputs.get_varNames()[indexMapping[idx]])
+        plt.figure(1)
+        for meas in values: 
+            lasenyal= _h5data.get_senyal(meas) 
+            plt.plot(lasenyal.get_sampleTime(), lasenyal.get_signalReal())
+        plt.legend(values)
+        plt.ylabel(lasenyal.component)
+        plt.xlabel('Time (s)')
+        plt.grid(b=True, which='both')
+        plt.show()
+         
+    #     command= objCOMC.plot(['bus4.p.vr'])
+    #     OMPython.execute(command)
+    #     print command
 
 def main(argv):
-    ''' loading simulations resources. Parameters related to models and libraries to be simulated'''
-    obj= sp.SimulationJMProperties(sys.argv[1])
-    moPath= obj.getModelPath()
-    libPath= obj.getLibraryPath()
-    moFile= obj.getModelFile()
-    moModel= obj.getModelName()
-    moInput= obj.getModelValuesFile()
-    outPath= obj.getOutputPath()
-    ''' Loading configuration values for the simulator solver '''
-    config= cfg.SimulationConfigJM(sys.argv[2])
+    simCity= Simulation(argv)
+    simCity.loadSources()
+    results= simCity.simulate()
+    h5data= simCity.saveOutputs(results)
+    simCity.plotOutputs(h5data)
 
-    tic= timeit.default_timer()
-    # Simulation process with JModelica
-    absPathFile= moPath + moFile
-#     print simRes.getModelName()
-#     print absPathFile
-#     print simRes.getLibraryPath()
-    '''build the fmu block from the modelica model '''
-    fmu_name= compile_fmu(moModel, absPathFile,
-                           compiler_options = {'extra_lib_dirs':libPath})
-    # Load the model
-    model_fmu= load_fmu(fmu_name)
-    moParams= JMModelParams(moPath, moInput)
-    moParams.loadModelValues()
-#     print absInputFile
-    '''check if the dictionary inputs is not empty, 
-    with model_fmu.set(key,value) input values are given to the model '''
-    if moParams.getModelInputs()!= {}:
-        for key, value in moParams.getModelInputs().iteritems():
-            print key, value
-            model_fmu.set(key,value)
-    
-    ''' Load the list of options for the JModelica compiler '''
-    opts = model_fmu.simulate_options()
-    opts['solver']= config.getSolver()
-    opts['ncp']= config.getNcp()
-#     for key,value in simOpt.getOptions().items():
-#         print key,value
-#         opts[key] = value
-    print opts
-    result = model_fmu.simulate(start_time= config.getStartTime(), 
-                                final_time= config.getStopTime(), 
-                                options=opts)
-    
-    toc= timeit.default_timer()
-#         print('Simulation time: ')
-    print (toc - tic) #elapsed time in seconds
-    # ---
-    
-    # Create SignalMeasurement object with the signal outputs of the simulation
-    # TODO change this according to outputs
-    measurement= signal.SignalMeasurement(len(result['time']))
-    #print len(x1), len(x2), len(t)
-    measurement.add_Samples(result['time'])
-    measurement.add_SignalPhaseA(result[moParams.getModelOutputs()[0]], [])
-#     measurement.add_SignalPhaseB(result[model.outputParams[1]], [])
-    # Store outputs into HDF5 format
-    parser= fm.FormatMeasurement(outPath, len(result['time']))
-    parser.h5_format_Signal(measurement,'samples')
-    parser.h5_format_Signal(measurement,'voltage')
-    parser.h5_endFormat()
-    # plot the results, this will be deleted and integrated in the JAVA GUI
-    plt.figure(1)
-#     plt.plot(result['time'], result[model.outputParams[0]],result['time'], result[model.outputParams[1]])
-    plt.plot(result['time'], result[moParams.getModelOutputs()[0]])
-#     plt.plot(t, x1, t, x2)
-#     plt.legend((model.outputParams[0],model.outputParams[1]))
-    plt.legend(moParams.getModelOutputs()[0])
-#     plt.legend(('x1','x2'))
-    plt.title('SMIB 1 Generator Fault at bus 3')
-    plt.ylabel('Voltage (V)')
-    plt.xlabel('Time (s)')
-    plt.show()
-    # ---
-    
 if __name__ == '__main__':
     main(sys.argv[1:])
+    

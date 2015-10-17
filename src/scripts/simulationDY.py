@@ -4,9 +4,9 @@ Created on 4 apr 2014
 @author: fragom
 '''
 import os, sys, timeit
+# from buildingspy.io.outputfile import Reader
 from classes.SimulatorDY import SimulatorDY
 import classes.SimulationConfigDY as simconfig
-# from buildingspy.io.outputfile import Reader
 import classes.SimulationResources as simsource
 import matplotlib.pyplot as plt
 from classes.StreamH5File import OutputH5Stream
@@ -36,6 +36,9 @@ class Simulation():
         self.moModel= self.sources.get_modelName()
         self.outPath= self.sources.get_outputPath()
         self.outputs.load_varList()
+        print self.outputs.get_varList()
+        print self.outputs.get_varNames()
+        print '1'
         self.simOptions= self.config.setSimOptions()
         
     def simulate(self):
@@ -63,25 +66,18 @@ class Simulation():
     
     def saveOutputs(self):
         resultmat= self.moModel.split('.')[-1]
-    #     print 'resultFile:', resultFile
         resultmat+= '.mat'
         os.chdir(self.outPath)
-        resulth5= self.outPath+ '/'+ 'SimulationOutputs.h5'
-    #     print 'os.getcwd():', os.getcwd()
-#         output= Reader(resultFile, "dymola")
-#         varNames= output.varNames('bus*.v')
+        h5Name=  self.moModel+ '_&'+ 'dymola'+ '.h5'
+        resulth5= self.outPath+ '/'+ h5Name
         h5pmu= OutputH5Stream([self.outPath, resulth5, resultmat], 'dymola')
-        h5pmu.open_h5(self.moModel)    
-        for meas, name in self.outputs.get_varList():
-            modelSignal= name.split(',')
-            nameComponent= meas.split('.')[0]
-            nameMeasurement= meas.split('.')[1]
-            if len(modelSignal)> 1:
-                h5pmu.set_senyalRect(meas, modelSignal[0], modelSignal[1])
-            else:
-                h5pmu.set_senyalRect(meas, modelSignal[0], [])
-        h5pmu.save_h5Names(nameComponent, meas) 
-        h5pmu.save_h5Values(nameComponent, meas) 
+        h5pmu.open_h5(self.moModel)   
+        ''' TODO: Saving variables thinking with measurements from PMU, form v/i, anglev/anglev ''' 
+        for compo, signal_names in self.outputs.get_varList():
+            l_signals= signal_names.split(',')
+            h5pmu.set_senyalRect(compo, l_signals[0], l_signals[1])
+            h5pmu.save_h5Names(compo, l_signals) 
+            h5pmu.save_h5Values(compo, 'null') 
         h5pmu.close_h5()
         ''' object h5 file with result data'''
         return h5pmu

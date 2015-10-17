@@ -17,7 +17,7 @@ class Simulation():
     def __init__(self, argv):
         '''TODO: LOG parameters '''
         ''' sys.argv is array of parameters 
-        sys.argv[1]: file with simulation resources, a.k.a. model file, library file, output folder 
+        sys.argv[1]: file with simulation resources, a.k.a. model file, library file, output folder,
         sys.argv[2]: file with configuration of the simulator compiler
         sys.argv[3]: file containing the name of outputs of the model to be saved in h5 and plotted
         '''
@@ -74,7 +74,8 @@ class Simulation():
     def saveOutputs(self, _resultfile):
         ''' build file path with outputpath, using the ModelicaRes to read the .mat file '''
         resultmat= self.outPath+ '/'+ _resultfile
-        resulth5= self.outPath+ '/'+ 'SimulationOutputs.h5'
+        h5Name=  self.moModel+ '_&'+ 'openmodelica'+ '.h5'
+        resulth5= self.outPath+ '/'+ h5Name
         # create .h5 for writing
         h5pmu= OutputH5Stream([self.outPath,resulth5,resultmat], 'omc')
         h5pmu.open_h5(self.moModel)    

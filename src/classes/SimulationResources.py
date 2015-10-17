@@ -32,6 +32,7 @@ class SimulationResources(object):
         self.properties= {'default':'property'}
         
     def save_Properties(self, _filename, _comment):
+        '''TODO change it dammit!! '''
         for key in self.properties:
             self.propertyF.setProperty(key, self.properties[key])
         fle= open(_filename,'w')
