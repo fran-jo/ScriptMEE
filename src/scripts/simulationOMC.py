@@ -3,14 +3,17 @@ Created on 5 apr 2014
 
 @author: fragom
 '''
-import sys,timeit
-import classes.SimulationResources as simsource
+import sys, timeit
+
+import OMPython
+
+import classes.CommandOMC as comc
 from classes.OutputModelVar import OutputModelVar
 import classes.SimulationConfigOMC as simconfig
-import classes.CommandOMC as comc
-import OMPython
-import matplotlib.pyplot as plt
+import classes.SimulationResources as simsource
 from classes.StreamH5File import OutputH5Stream
+import matplotlib.pyplot as plt
+
 
 class Simulation():
     
@@ -27,8 +30,7 @@ class Simulation():
         self.config= simconfig.SimulationConfigOMC(sys.argv[2])
         ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
         self.outputs= OutputModelVar(sys.argv[3])
-        
-        
+         
     def loadSources(self):
         ''' TODO: LOG sources files and models '''
         self.sources.load_Properties()

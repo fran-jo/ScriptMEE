@@ -5,11 +5,11 @@ Created on 11 apr 2014
 '''
 import shutil
 
+
 class CommandOMC:
     '''
     classdocs
     '''
-
 
     def __init__(self):
         '''

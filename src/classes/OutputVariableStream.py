@@ -4,7 +4,7 @@ Read/Write values
 @author: fragom
 '''
 
-class OutputModelVar(object):
+class OutputVariableStream():
     '''
     classdocs
     '''

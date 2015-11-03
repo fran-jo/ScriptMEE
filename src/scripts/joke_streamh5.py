@@ -4,10 +4,12 @@ Created on 28 aug 2015
 @author: fragom
 '''
 
-from classes.StreamH5File import OutputH5Stream
-from classes.OutputModelVar import OutputModelVar
-import matplotlib.pyplot as plt
 import numpy
+
+from classes.OutputModelVar import OutputModelVar
+from classes.StreamH5File import OutputH5Stream
+import matplotlib.pyplot as plt
+
 
 if __name__ == '__main__':
     moOutputs= OutputModelVar('./models/smib2lwfault_varList.properties')

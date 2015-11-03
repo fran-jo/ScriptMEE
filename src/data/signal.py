@@ -4,6 +4,10 @@ Created on 26 maj 2015
 @author: fragom
 '''
 import itertools
+from math import sqrt
+
+from numpy import arctan2, abs, sin, cos
+
 
 class Signal(object):
     '''
@@ -94,8 +98,6 @@ class Signal(object):
     component = property(get_ccomponent, set_ccomponent, del_ccomponent, "ccomponent's docstring")
 
         
-from math import sqrt
-from numpy import arctan2, abs, sin, cos
 
 class SignalPMU(Signal):
     '''

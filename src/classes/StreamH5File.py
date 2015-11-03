@@ -3,11 +3,14 @@ Created on 7 apr 2015
 
 @author: fragom
 '''
-from modelicares import SimRes
-from numpy import angle,absolute
 import os, numpy
-import h5py as h5
+
+from modelicares import SimRes
+from numpy import angle, absolute
+
 from data import signal
+import h5py as h5
+
 
 class StreamH5File(object):
     '''

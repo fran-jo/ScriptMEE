@@ -2,13 +2,14 @@
 Created on 6 aug 2014
 @author: fragom
 '''
-import sys
+import datetime
 import os
 import platform
-import subprocess
-import time
-import datetime
 import shutil
+import subprocess
+import sys
+import time
+
 
 class SimulatorDY(object):
     '''

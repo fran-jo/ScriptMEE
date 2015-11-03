@@ -4,8 +4,10 @@ Created on 24 jan 2014
 @author: fragom
 '''
 import os, time
+
 import classes.SignalMeasurement as signal
 import h5py as h5
+
 
 class FormatMeasurement:
     '''

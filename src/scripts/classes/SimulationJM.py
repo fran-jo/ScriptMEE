@@ -4,17 +4,19 @@ Created on 4 apr 2014
 
 @author: fragom
 '''
-import sys, timeit
-from pymodelica import compile_fmu
 from pyfmi import load_fmu
-import matplotlib.pyplot as plt # plot library
+from pymodelica import compile_fmu
+import sys, timeit
+
+from classes.OutputModelVar import OutputModelVar
+import classes.SimulationConfigJM as simconfig
+import classes.SimulationResources as simsource
+from classes.StreamH5File import OutputH5Stream
+import matplotlib.pyplot as plt  # plot library
+
+
 # import classes.SignalMeasurement as signal
 # import classes.FormatMeasurement as fm
-import classes.SimulationResources as simsource
-import classes.SimulationConfigJM as simconfig
-from classes.OutputModelVar import OutputModelVar
-from classes.StreamH5File import OutputH5Stream
-
 class SimulationJM():
     
     def __init__(self, argv):

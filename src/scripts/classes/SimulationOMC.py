@@ -3,14 +3,17 @@ Created on 5 apr 2014
 
 @author: fragom
 '''
-import sys,timeit
-import classes.SimulationResources as simsource
+import sys, timeit
+
+import OMPython
+
+import classes.CommandOMC as comc
 from classes.OutputModelVar import OutputModelVar
 import classes.SimulationConfigOMC as simconfig
-import classes.CommandOMC as comc
-import OMPython
-import matplotlib.pyplot as plt
+import classes.SimulationResources as simsource
 from classes.StreamH5File import OutputH5Stream
+import matplotlib.pyplot as plt
+
 
 class SimulationOMC():
     

@@ -4,13 +4,15 @@ Created on 4 apr 2014
 @author: fragom
 '''
 import os, sys, timeit
-# from buildingspy.io.outputfile import Reader
-from classes.SimulatorDY import SimulatorDY
-import classes.SimulationConfigDY as simconfig
-import classes.SimulationResources as simsource
+
+from classes.OutputVariableStream import OutputVariableStream 
+import classes.SimulationResources as simsource 
+import classes.SimulationConfigDY as simconfig  
+from classes.SimulatorDY import SimulatorDY 
+from classes.StreamH5File import OutputH5Stream 
 import matplotlib.pyplot as plt
-from classes.StreamH5File import OutputH5Stream
-from classes.OutputModelVar import OutputModelVar
+import classes.SimulationConfigDY as simconfig 
+
 
 class Simulation():
     
@@ -25,7 +27,7 @@ class Simulation():
         ''' Loading configuration values for the simulator solver '''
         self.config= simconfig.SimulationConfigDY(sys.argv[2])
         ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
-        self.outputs= OutputModelVar(sys.argv[3])
+        self.outputs= OutputVariableStream(sys.argv[3])
         
     def loadSources(self):
         self.sources.load_Properties()

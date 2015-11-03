@@ -8,6 +8,7 @@ This information is stored in the correspondence .properties file
 
 import os
 
+
 class SimulationResources(object):
     '''
     classdocs

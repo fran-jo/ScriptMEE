@@ -4,14 +4,16 @@ Created on 4 apr 2014
 @author: fragom
 '''
 import os, sys, timeit
-# from buildingspy.io.outputfile import Reader
-from classes.SimulatorDY import SimulatorDY
+
+from classes.OutputModelVar import OutputModelVar
 import classes.SimulationConfigDY as simconfig
 import classes.SimulationResources as simsource
-import matplotlib.pyplot as plt
+from classes.SimulatorDY import SimulatorDY
 from classes.StreamH5File import OutputH5Stream
-from classes.OutputModelVar import OutputModelVar
+import matplotlib.pyplot as plt
 
+
+# from buildingspy.io.outputfile import Reader
 class SimulationDY():
     
     def __init__(self, argv):
