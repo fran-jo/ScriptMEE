@@ -3,13 +3,8 @@
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
 <path>/${PROJECT_DIR_NAME}</path>
 <path>/${PROJECT_DIR_NAME}/src</path>
-<path>/${PROJECT_DIR_NAME}/src/classes</path>
 </pydev_pathproperty>
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 2.7</pydev_property>
-<pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">python27</pydev_property>
-<pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
-<path>C:\IDEModel\JModelica\install\Python\pyfmi</path>
-<path>C:\IDEModel\JModelica\install\Python\pyjmi</path>
-<path>C:\IDEModel\JModelica\install\Python\pymodelica</path>
-</pydev_pathproperty>
+<pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">python</pydev_property>
+
 </pydev_project>
