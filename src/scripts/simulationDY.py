@@ -5,13 +5,12 @@ Created on 4 apr 2014
 '''
 import os, sys, timeit
 
-from classes.OutputVariableStream import OutputVariableStream 
+from classes import OutVariableStream as outvar
 import classes.SimulationResources as simsource 
 import classes.SimulationConfigDY as simconfig  
 from classes.SimulatorDY import SimulatorDY 
 from classes.StreamH5File import OutputH5Stream 
 import matplotlib.pyplot as plt
-import classes.SimulationConfigDY as simconfig 
 
 
 class Simulation():
@@ -27,7 +26,7 @@ class Simulation():
         ''' Loading configuration values for the simulator solver '''
         self.config= simconfig.SimulationConfigDY(sys.argv[2])
         ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
-        self.outputs= OutputVariableStream(sys.argv[3])
+        self.outputs= outvar.OutVariableStream(sys.argv[3])
         
     def loadSources(self):
         self.sources.load_Properties()
@@ -78,6 +77,7 @@ class Simulation():
         for compo, signal_names in self.outputs.get_varList():
             l_signals= signal_names.split(',')
             h5pmu.set_senyalRect(compo, l_signals[0], l_signals[1])
+            print h5pmu.get_senyal(compo).get_sampleTime()
             h5pmu.save_h5Names(compo, l_signals) 
             h5pmu.save_h5Values(compo, 'null') 
         h5pmu.close_h5()

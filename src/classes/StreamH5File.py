@@ -83,6 +83,9 @@ class StreamH5File(object):
         csenyal= signal.Signal()
         if (_nameI != []):
             csenyal.set_signalRect(self.cmatfile[nameVarTime], self.cmatfile[_nameR], self.cmatfile[_nameI])
+            print self.cmatfile[nameVarTime]
+            print self.cmatfile[_nameR]
+            print self.cmatfile[_nameI]
         else:
             ''' array of 0 of the same length as samples '''
             emptyarray= [0 for x in self.cmatfile[nameVarTime]]
@@ -178,7 +181,8 @@ class OutputH5Stream(StreamH5File):
         super(OutputH5Stream, self).__init__(_params, _compiler)
         
     def open_h5(self, _network):
-        ''' Opens the h5 file in append mode '''
+        ''' Opens the h5 file in append mode 
+        _network is the name of the model simulated. Is used to create the main group of this .h5'''
         self.ch5file= h5.File(self.cfileName, 'a')
         if not _network in self.ch5file:
             self.cgroup= self.ch5file.create_group(_network)

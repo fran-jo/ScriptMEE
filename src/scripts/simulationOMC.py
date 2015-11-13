@@ -8,7 +8,7 @@ import sys, timeit
 import OMPython
 
 import classes.CommandOMC as comc
-from classes.OutputModelVar import OutputModelVar
+from classes import OutVariableStream as outvar
 import classes.SimulationConfigOMC as simconfig
 import classes.SimulationResources as simsource
 from classes.StreamH5File import OutputH5Stream
@@ -29,7 +29,7 @@ class Simulation():
         ''' Loading configuration values for the simulator solver '''
         self.config= simconfig.SimulationConfigOMC(sys.argv[2])
         ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
-        self.outputs= OutputModelVar(sys.argv[3])
+        self.outputs= outvar.OutputVariableStream(sys.argv[3])
          
     def loadSources(self):
         ''' TODO: LOG sources files and models '''

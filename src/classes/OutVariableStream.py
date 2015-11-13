@@ -1,10 +1,10 @@
 '''
-Created on 1 apr 2014
-Read/Write values 
+Created on 9 nov 2015
+
 @author: fragom
 '''
 
-class OutputVariableStream():
+class OutVariableStream(object):
     '''
     classdocs
     '''
@@ -36,4 +36,3 @@ class OutputVariableStream():
         ''' returns the variable name from the component. 
         This name is the same name implemented in the model '''
         return self.outputs.items()
-    
