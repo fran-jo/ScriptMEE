@@ -6,8 +6,8 @@ Created on 5 apr 2014
 import sys, timeit
 
 import OMPython
-
 import classes.CommandOMC as comc
+
 from classes import OutVariableStream as outvar
 import classes.SimulationConfigOMC as simconfig
 import classes.SimulationResources as simsource
