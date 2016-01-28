@@ -21,6 +21,7 @@ class CommandOMC:
         strcommand.append('loadFile(')
         strcommand.append('"')
         strcommand.append(_path)
+        strcommand.append('/')
         strcommand.append(_model)
         strcommand.append('"')
         strcommand.append(')')

@@ -3,11 +3,8 @@ Created on 26 maj 2015
 
 @author: fragom
 '''
-import itertools
-from math import sqrt
 
-from numpy import arctan2, abs, sin, cos
-
+from __builtin__ import str
 
 class Signal(object):
     '''
@@ -18,86 +15,79 @@ class Signal(object):
         '''
         Constructor
         '''
-        self.csamples= 0
-        self.csignal_cmp = []
-        self.ccomponent= ''
-        self.cvariable= ''
+        self._samples= 0
+        self._signal = []
+        self._component= ''
 
-    def get_csamples(self):
+    def get_samples(self):
         ''' return the number of samples of the singal '''
-        return self.csamples
+        return self._samples
 
-    
     def get_signal(self):
         ''' return the signal in rectangular form '''
-        return self.csignal_cmp
+        return self._signal
     
     def get_sampleTime(self):
         ''' returns an array with values of sample/time '''
         series= []
-        for s,r,i in self.csignal_cmp:
+        for s,r,i in self._signal:
             series.append(s)
         return series 
     
     def get_signalReal(self):
         ''' returns an array with real component of the signal'''
         series= []
-        for s,r,i in self.csignal_cmp:
+        for s,r,i in self._signal:
             series.append(r)
         return series    
         
-    def get_signalImag(self):
+    def get_signalImaginary(self):
         ''' returns an array with imaginary component of the signal '''
         series= []
-        for s,r,i in self.csignal_cmp:
+        for s,r,i in self._signal:
             series.append(i)
         return series    
 
     def get_ccomponent(self):
         ''' returns the name of the component which the signal belongs to '''
-        return self.ccomponent 
-    
-    def get_cvariable(self):
-        ''' returns the name of the variable which the signal belongs to '''
-        return self.ccomponent  
+        return self._component  
 
 
     def set_csamples(self, _value):
         ''' _value: input sample/time array '''
-        self.csamples = len(_value)
-       
-    def set_signalRect(self, _samples, _valueR, _valueI):
+        self._samples = len(_value)
+      
+    def set_signal(self, samples, valueR, valueI):
         ''' create dictionary with real part of the complex signal
         _samples:
         _valueR: '''
-        self.csignal_cmp= [(s,r,i) for s,r,i in zip(_samples, _valueR, _valueI)]
-        self.csamples= len(self.csignal_cmp)
+        self._signal= [(s,r,i) for s,r,i in zip(samples, valueR, valueI)]
+        self._samples= len(self._signal)
+
 
     def set_ccomponent(self, value):
         ''' set the name of the component which the signal belongs to '''
-        self.ccomponent = value
-        
-    def set_cvariable(self, value):
-        ''' set the name of the variable which the signal belongs to '''
-        self.cvariable = value
+        self._component = value
 
 
     def del_csamples(self):
-        del self.csamples
-
+        del self._samples
 
     def del_signal(self):
-        del self.csignal_cmp
-
+        del self._signal
 
     def del_ccomponent(self):
-        del self.ccomponent
+        del self._component
 
-    samples = property(get_csamples, set_csamples, del_csamples, "csamples's docstring")
-    signalCmp = property(get_signal, set_signalRect, del_signal, "csignal_a's docstring")
-    component = property(get_ccomponent, set_ccomponent, del_ccomponent, "ccomponent's docstring")
-
+    def __str__(self):
+        estrin= self._component+ " "+ str(self._samples)+ " samples: "
+        return estrin
+    
+    def __repr__(self):
+        return self.__str__()
         
+from math import sqrt
+from numpy import arctan2, abs, sin, cos
 
 class SignalPMU(Signal):
     '''
@@ -111,41 +101,33 @@ class SignalPMU(Signal):
         self.signal = {(magnitude, angle)}
         '''
         Signal.__init__(self)
-
-    
-    def get_signal(self):
-        ''' return the signal in rectangular form '''
-        return self.csignal_cmp
     
     def get_signalMag(self):
         ''' returns an array with magnitude component of the signal '''
         series= []
-        for s,m,p in self.csignal_cmp:
+        for s,m,p in self._signal:
             series.append(m)
         return series    
         
     def get_signalPhase(self):
         ''' returns an array with phase component of the signal '''
         series= []
-        for s,m,p in self.csignal_cmp:
+        for s,m,p in self._signal:
             series.append(p)
         return series    
     
     
-    def set_signalPolar(self, _samples, _valueM, _valueP):
+    def set_signalPolar(self, sampletime, value_mag, value_ph):
         ''' create dictionary with real part of the complex signal
         _samples:
         _valueR: '''
-        self.csignal_cmp= [(s,r,i) for s,r,i in zip(_samples, _valueM, _valueP)]
-        self.csamples= len(self.csignal_cmp)
+        self._signal= zip(sampletime, value_mag, value_ph)
+        self._samples= len(self._signal)
 
 
     def del_signal(self):
-        del self.csignal_cmp
+        del self._signal
         
-        
-    signalPolar = property(get_signal, set_signalPolar, del_signal, "csignal_pol's docstring")
-
 
     def complex2Polar(self):
         pass

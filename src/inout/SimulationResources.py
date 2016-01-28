@@ -27,7 +27,6 @@ class SimulationResources(object):
         params[0]: .properties file
         params[1]: reading mode
         '''
-        '''TODO: Recuperar antiga implementacio '''
         self.fitxer= params[0].replace('\\','/')
         self.readingMode= params[1]
         self.properties= {'default':'property'}

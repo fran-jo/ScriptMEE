@@ -4,21 +4,18 @@ Created on 5 apr 2014
 @author: fragom
 '''
 import sys, timeit
-
-import OMPython
+from OMPython import OMCSession
 import classes.CommandOMC as comc
-
 from classes import OutVariableStream as outvar
-import classes.SimulationConfigOMC as simconfig
-import classes.SimulationResources as simsource
-from classes.StreamH5File import OutputH5Stream
+import inout.SimulationConfigOMC as simconfig
+import inout.SimulationResources as simsource
+from inout.StreamH5File import OutputH5Stream
 import matplotlib.pyplot as plt
-
 
 class Simulation():
     
     def __init__(self, argv):
-        '''TODO: LOG parameters '''
+        # TODO: LOG parameters 
         ''' sys.argv is array of parameters 
         sys.argv[1]: file with simulation resources, a.k.a. model file, library file, output folder,
         sys.argv[2]: file with configuration of the simulator compiler
@@ -29,10 +26,11 @@ class Simulation():
         ''' Loading configuration values for the simulator solver '''
         self.config= simconfig.SimulationConfigOMC(sys.argv[2])
         ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
-        self.outputs= outvar.OutputVariableStream(sys.argv[3])
+        # TODO use StreamMATFile for storing output variables to plot
+        self.outputs= outvar.OutVariableStream(sys.argv[3])
          
     def loadSources(self):
-        ''' TODO: LOG sources files and models '''
+        # TODO: LOG sources files and models
         self.sources.load_Properties()
         self.moPath= self.sources.get_modelPath()
         self.moFile= self.sources.get_modelFile()
@@ -41,11 +39,12 @@ class Simulation():
         self.moModel= self.sources.get_modelName()
         self.outPath= self.sources.get_outputPath()
         self.outputs.load_varList()
-        ''' TODO: LOG configuration '''
+        # TODO: LOG configuration 
         self.simOptions= self.config.setSimOptions()
         
     def simulate(self):
-        ''' TODO: LOG all command omc '''
+        # TODO: LOG all command omc
+        OMPython = OMCSession()
         tic= timeit.default_timer()
         objCOMC= comc.CommandOMC()
         '''Load Modelica library'''
@@ -58,19 +57,19 @@ class Simulation():
         print '2) Command', command
         success= OMPython.execute(command)
         if (success):
-            ''' TODO: parametrized the input values, in case they are needed for the model '''
+            # TODO: input values as parameters, in case they are needed for the model
             #command= objCOMC.simulate(self.moModel, self.simOptions, 'vf1=0.1,pm1=0.001')
             command= objCOMC.simulate(self.moModel, self.simOptions, False)
             print '3) Command', command
             result= OMPython.execute(command)
             print '4) Result', result
-        filename = OMPython.get(result,'SimulationResults.resultFile')
-        print '5) Result file ', filename
-        resultfile= objCOMC.saveResult(filename, self.outPath)
+        # TODO: Handle when simulation fails, no result file
+        inMemoryResultFile= OMPython.get(result, 'SimulationResults.resultFile')
+        print '5) Result file ', inMemoryResultFile
+        resultfile= objCOMC.saveResult(inMemoryResultFile, self.outPath)
         toc= timeit.default_timer()
         print 'Simulation time ', toc- tic
-        '''TODO: study the units of elapsed time '''
-        
+        # TODO: study the units of elapsed time 
         return resultfile
     
     def saveOutputs(self, _resultfile):
@@ -92,15 +91,14 @@ class Simulation():
                 h5pmu.set_senyalRect(meas, modelSignal[0], [])
         h5pmu.save_h5Names(nameComponent, meas) 
         h5pmu.save_h5Values(nameComponent, meas) 
-        
         h5pmu.close_h5()
         ''' object h5 file with result data'''
         return h5pmu
     
-    def plotOutputs(self, _h5data):
+    def selectData(self, arrayQualquiera):
         count= 0
         indexMapping={}
-        for i, meas in enumerate(self.outputs.get_varNames()):
+        for i, meas in enumerate(arrayQualquiera):
             print '[%d] %s' % (i, meas)
             indexMapping[count]= i
             count+= 1
@@ -112,7 +110,11 @@ class Simulation():
         values= []
         for idx in lindex:  
             idx= int(idx)
-            values.append(self.outputs.get_varNames()[indexMapping[idx]])
+            values.append(arrayQualquiera[indexMapping[idx]])
+        return values
+            
+    def plotOutputs(self, _h5data):
+        values= self.selectData(self.outputs.get_varNames())
         plt.figure(1)
         for meas in values: 
             lasenyal= _h5data.get_senyal(meas) 

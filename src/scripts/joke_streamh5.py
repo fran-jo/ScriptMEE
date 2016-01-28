@@ -239,7 +239,6 @@ class OutputH5Stream(StreamH5File):
         _variable is the name of the signal to be saved '''
         # create datasets
         if not _component+'_values' in self.cgroup:
-            ''' TODO: dataset size according to signals of the component '''
 #             self.cdatasetValues= self.cgroup.create_dataset(_component+'_values', 
 #                                                       (self.dsenyal[_component].get_csamples(),len(self.dsenyal)*2+1),
 #                                                       chunks=(4,3))
@@ -269,7 +268,6 @@ class OutputH5Stream(StreamH5File):
         _variable list of signal names from the _component'''
         dt = h5.special_dtype(vlen=unicode)
         if not _component+'_items' in self.cgroup:
-            ''' TODO: dataset size according to signals of the component '''
             self.datasetNames= self.cgroup.create_dataset(_component+'_items', (1,len(_variable)+1), dtype=dt)
         else:
             self.datasetNames= self.cgroup[_component+'_items']
@@ -294,8 +292,7 @@ def main(argv):
     print resulth5
     h5pmu= OutputH5Stream([outPath, resulth5, resultmat], 'dymola')
     print h5pmu
-    h5pmu.open_h5('IEEENetworks2.IEEE_9Bus')   
-    ''' TODO: Saving variables thinking with measurements from PMU, form v/i, anglev/anglev ''' 
+    h5pmu.open_h5('IEEENetworks2.IEEE_9Bus')    
     print 'variable list:',outputs.get_varList()
    
     for compo, signal_names in outputs.get_varList():

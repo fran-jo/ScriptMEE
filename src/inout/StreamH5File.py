@@ -150,7 +150,7 @@ class InputH5Stream(StreamH5File):
         '''
         # load data into internal dataset
         self.cgroup= self.ch5file[_network]
-        self.cdatasetValues= self.cgroup[_component+'_values']
+        self.cdatasetValues= self.cgroup[_component+'_items']
         self.cdatasetNames= self.cgroup[_component+'_names']
         idx= 1
         for item in self.cdatasetNames:
@@ -197,7 +197,6 @@ class OutputH5Stream(StreamH5File):
         _variable is the name of the signal to be saved '''
         # create datasets
         if not _component+'_values' in self.cgroup:
-            ''' TODO: dataset size according to signals of the component '''
 #             self.cdatasetValues= self.cgroup.create_dataset(_component+'_values', 
 #                                                       (self.dsenyal[_component].get_csamples(),len(self.dsenyal)*2+1),
 #                                                       chunks=(100,3))
@@ -227,7 +226,6 @@ class OutputH5Stream(StreamH5File):
         _variable list of signal names from the _component'''
         dt = h5.special_dtype(vlen=unicode)
         if not _component+'_items' in self.cgroup:
-            ''' TODO: dataset size according to signals of the component '''
             self.datasetNames= self.cgroup.create_dataset(_component+'_items', (1,len(_variable)+1), dtype=dt)
         else:
             self.datasetNames= self.cgroup[_component+'_items']

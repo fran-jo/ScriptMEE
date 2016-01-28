@@ -6,10 +6,10 @@ Created on 4 apr 2014
 import os, sys, timeit
 
 from classes import OutVariableStream as outvar
-import classes.SimulationResources as simsource 
-import classes.SimulationConfigDY as simconfig  
+import inout.SimulationResources as simsource 
+import inout.SimulationConfigDY as simconfig  
 from classes.SimulatorDY import SimulatorDY 
-from classes.StreamH5File import OutputH5Stream 
+from inout.StreamH5File import OutputH5Stream 
 import matplotlib.pyplot as plt
 
 
@@ -73,7 +73,7 @@ class Simulation():
         resulth5= self.outPath+ '/'+ h5Name
         h5pmu= OutputH5Stream([self.outPath, resulth5, resultmat], 'dymola')
         h5pmu.open_h5(self.moModel)   
-        ''' TODO: Saving variables thinking with measurements from PMU, form v/i, anglev/anglev ''' 
+        ''' Saving variables thinking with measurements from PMU, form v/i, anglev/anglev ''' 
         for compo, signal_names in self.outputs.get_varList():
             l_signals= signal_names.split(',')
             h5pmu.set_senyalRect(compo, l_signals[0], l_signals[1])
@@ -84,10 +84,10 @@ class Simulation():
         ''' object h5 file with result data'''
         return h5pmu
     
-    def plotOutputs(self, _h5data):
+    def selectData(self, arrayQualquiera):
         count= 0
         indexMapping={}
-        for i, meas in enumerate(self.outputs.get_varNames()):
+        for i, meas in enumerate(arrayQualquiera):
             print '[%d] %s' % (i, meas)
             indexMapping[count]= i
             count+= 1
@@ -99,8 +99,11 @@ class Simulation():
         values= []
         for idx in lindex:  
             idx= int(idx)
-            values.append(self.outputs.get_varNames()[indexMapping[idx]])
-        
+            values.append(arrayQualquiera[indexMapping[idx]])
+        return values
+            
+    def plotOutputs(self, _h5data):
+        values= self.selectData(self.outputs.get_varNames())
         plt.figure(1)
         for meas in values: 
             lasenyal= _h5data.get_senyal(meas) 
