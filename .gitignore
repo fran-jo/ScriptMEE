@@ -14,3 +14,4 @@ old/
 *.pydevproject
 models/PowerSystems.mo
 .pydevproject
+*.json

@@ -56,6 +56,7 @@ class Simulation():
         command= objCOMC.loadFile(self.moPath, self.moFile)
         print '2) Command', command
         success= OMPython.execute(command)
+        result= None
         if (success):
             # TODO: input values as parameters, in case they are needed for the model
             #command= objCOMC.simulate(self.moModel, self.simOptions, 'vf1=0.1,pm1=0.001')
@@ -64,9 +65,11 @@ class Simulation():
             result= OMPython.execute(command)
             print '4) Result', result
         # TODO: Handle when simulation fails, no result file
-        inMemoryResultFile= OMPython.get(result, 'SimulationResults.resultFile')
-        print '5) Result file ', inMemoryResultFile
-        resultfile= objCOMC.saveResult(inMemoryResultFile, self.outPath)
+#         inMemoryResultFile= OMPython.get(result, 'SimulationResults.resultFile')
+#         print '5) Result file ', inMemoryResultFile
+#         resultfile= objCOMC.saveResult(inMemoryResultFile, self.outPath)
+        print '5) Result file ', result
+        resultfile= objCOMC.saveResult(result, self.outPath)
         toc= timeit.default_timer()
         print 'Simulation time ', toc- tic
         # TODO: study the units of elapsed time 
