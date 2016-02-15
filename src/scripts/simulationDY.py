@@ -37,9 +37,8 @@ class Simulation():
         self.moModel= self.sources.get_modelName()
         self.outPath= self.sources.get_outputPath()
         self.outputs.load_varList()
-        print self.outputs.get_varList()
-        print self.outputs.get_varNames()
-        print '1'
+#         print self.outputs.get_varList()
+#         print self.outputs.get_varNames()
         self.simOptions= self.config.setSimOptions()
         
     def simulate(self):
@@ -74,12 +73,13 @@ class Simulation():
         h5pmu= OutputH5Stream([self.outPath, resulth5, resultmat], 'dymola')
         h5pmu.open_h5(self.moModel)   
         ''' Saving variables thinking with measurements from PMU, form v/i, anglev/anglev ''' 
+        print 'self.outputs.get_varList()', self.outputs.get_varList()
         for compo, signal_names in self.outputs.get_varList():
             l_signals= signal_names.split(',')
             h5pmu.set_senyalRect(compo, l_signals[0], l_signals[1])
-            print h5pmu.get_senyal(compo).get_sampleTime()
+            print 'l_signals', l_signals
             h5pmu.save_h5Names(compo, l_signals) 
-            h5pmu.save_h5Values(compo, 'null') 
+            h5pmu.save_h5Values(compo) 
         h5pmu.close_h5()
         ''' object h5 file with result data'''
         return h5pmu
@@ -109,7 +109,7 @@ class Simulation():
             lasenyal= _h5data.get_senyal(meas) 
             plt.plot(lasenyal.get_sampleTime(), lasenyal.get_signalReal())
         plt.legend(values)
-        plt.ylabel(lasenyal.component)
+        plt.ylabel(lasenyal.get_component())
         plt.xlabel('Time (s)')
         plt.grid(b=True, which='both')
         plt.show()

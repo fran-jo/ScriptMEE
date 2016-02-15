@@ -48,12 +48,12 @@ class Signal(object):
             series.append(i)
         return series    
 
-    def get_ccomponent(self):
+    def get_component(self):
         ''' returns the name of the component which the signal belongs to '''
         return self._component  
 
 
-    def set_csamples(self, _value):
+    def set_samples(self, _value):
         ''' _value: input sample/time array '''
         self._samples = len(_value)
       
@@ -64,19 +64,18 @@ class Signal(object):
         self._signal= [(s,r,i) for s,r,i in zip(samples, valueR, valueI)]
         self._samples= len(self._signal)
 
-
-    def set_ccomponent(self, value):
+    def set_component(self, value):
         ''' set the name of the component which the signal belongs to '''
         self._component = value
 
 
-    def del_csamples(self):
+    def del_samples(self):
         del self._samples
 
     def del_signal(self):
         del self._signal
 
-    def del_ccomponent(self):
+    def del_component(self):
         del self._component
 
     def __str__(self):

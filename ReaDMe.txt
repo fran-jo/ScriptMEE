@@ -1,11 +1,12 @@
 Script running with Python 2.7.x
 Dependencies
-	- matplolib
-	- numpy
-	- h5
-	- ompython
+	- matplolib 1.2
+	- numpy 1.9.2
+	- h5py 2.3
+	- ompython 2.0
+	- modelicares 0.8.2
 
-Structure of the project
+Structure of the Eclipse project
 1. ROOT_FOLDER/
 2. ROOT_FOLDER/config/
 3. ROOT_FOLDER/models/
@@ -17,7 +18,7 @@ Folder 2) stores .properties files with information about:
 	a) the models to simulate,
 	b) basic configuration for compilers
 
-Folder 3) contains .properties files with the names of variables that need to be stored and plotted
+Folder 3) contains .properties files with the names of variables that will be saved
 	i.e. smib2lwfault_varList.properties
 
 Folder 6) contains the three main scripts of the project
@@ -31,11 +32,10 @@ Each script need three input files, in this order:
 	<nameModel>_varList.properties
 	
 	
-Selection of signals from h5
-the structure of the files is modelname as group
-two dataset per component (_items, _values)
+Selection of signals from h5 (h5 files organized information within groups of data and data sets
+The structure of the resulting files are
+1. modelname as name of the group
+2. two dataset per component (_items, _values)
+2.1. component_items contains the names of the variables which have been selected, from the component
+2.2. component_values contains the values of the variables which have been selected, from the component
 
-when selecting a signal the user will give the complete name of the signal i.e. n44.gen1.v
-with modelname, load group
-with component name, load corresponding pair of dataset
-with signal name (componentname.value), select the signal (values)
