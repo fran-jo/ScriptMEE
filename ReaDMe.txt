@@ -1,4 +1,4 @@
-Script running with Python 2.7.x
+Script running with Python 2.7.8
 Dependencies
 	- matplolib 1.2
 	- numpy 1.9.2
