@@ -13,3 +13,4 @@ dist/
 old/
 *.pydevproject
 models/PowerSystems.mo
+.pydevproject
