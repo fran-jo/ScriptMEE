@@ -68,15 +68,19 @@ class Simulation():
 #         inMemoryResultFile= OMPython.get(result, 'SimulationResults.resultFile')
 #         print '5) Result file ', inMemoryResultFile
 #         resultfile= objCOMC.saveResult(inMemoryResultFile, self.outPath)
-        print '5) Result file ', result
-        resultfile= objCOMC.saveResult(result, self.outPath)
+        print '5) Simulation Results', result['SimulationResults']
+        simulationResults= result['SimulationResults']
+        print '6) Result file', simulationResults['resultFile']
+        resultfile= objCOMC.saveResult(simulationResults['resultFile'], self.outPath)
         toc= timeit.default_timer()
         print 'Simulation time ', toc- tic
         # TODO: study the units of elapsed time 
         return resultfile
     
     def saveOutputs(self, _resultfile):
-        ''' build file path with outputpath, using the ModelicaRes to read the .mat file '''
+        ''' build file path with outputpath, using the ModelicaRes to read the .mat file 
+        The structure of the saving format takes into account format measurements from PMU, form v/i, anglev/anglei 
+        '''
         resultmat= self.outPath+ '/'+ _resultfile
         h5Name=  self.moModel+ '_&'+ 'openmodelica'+ '.h5'
         resulth5= self.outPath+ '/'+ h5Name
@@ -93,7 +97,7 @@ class Simulation():
             else:
                 h5pmu.set_senyalRect(meas, modelSignal[0], [])
         h5pmu.save_h5Names(nameComponent, meas) 
-        h5pmu.save_h5Values(nameComponent, meas) 
+        h5pmu.save_h5Values(nameComponent) 
         h5pmu.close_h5()
         ''' object h5 file with result data'''
         return h5pmu
@@ -138,7 +142,11 @@ def main(argv):
     simCity.loadSources()
     results= simCity.simulate()
     h5data= simCity.saveOutputs(results)
-    simCity.plotOutputs(h5data)
+    while (True):
+        simCity.plotOutputs(h5data)
+        value= raw_input("Plot another signal (y/n) ?: ")
+        if (value[0]== 'n'):
+            break
 
 if __name__ == '__main__':
     main(sys.argv[1:])

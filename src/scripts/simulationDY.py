@@ -49,7 +49,7 @@ class Simulation():
         ''' Change path to model folder '''
         os.chdir(self.moPath)
         
-        s= SimulatorDY([self.moModel, self.moFile, self.moPath, self.outPath])
+        s= SimulatorDY([self.moModel, self.moFile, self.libFile, self.moPath, self.outPath])
     #     s.showGUI(True)
     #     s.exitSimulator(False)
     #     s.addParameters({'vf1': 0.2, 'pm1': 0.02})
@@ -65,19 +65,21 @@ class Simulation():
         '''TODO: study the units of elapsed time '''
     
     def saveOutputs(self):
+        '''
+        The structure of the saving format takes into account format measurements from PMU, form v/i, anglev/anglei 
+        '''
         resultmat= self.moModel.split('.')[-1]
         resultmat+= '.mat'
         os.chdir(self.outPath)
         h5Name=  self.moModel+ '_&'+ 'dymola'+ '.h5'
         resulth5= self.outPath+ '/'+ h5Name
         h5pmu= OutputH5Stream([self.outPath, resulth5, resultmat], 'dymola')
-        h5pmu.open_h5(self.moModel)   
-        ''' Saving variables thinking with measurements from PMU, form v/i, anglev/anglev ''' 
-        print 'self.outputs.get_varList()', self.outputs.get_varList()
+        h5pmu.open_h5(self.moModel) 
+#         print 'self.outputs.get_varList()', self.outputs.get_varList()
         for compo, signal_names in self.outputs.get_varList():
             l_signals= signal_names.split(',')
             h5pmu.set_senyalRect(compo, l_signals[0], l_signals[1])
-            print 'l_signals', l_signals
+#             print 'l_signals', l_signals
             h5pmu.save_h5Names(compo, l_signals) 
             h5pmu.save_h5Values(compo) 
         h5pmu.close_h5()
@@ -95,7 +97,7 @@ class Simulation():
             value= raw_input("Select which variable do you want to plot: ")
             lindex = value.split()
         except ValueError:
-            print "Mal! Mal! Mal! Verdadera mal! Por no decir borchenoso!" 
+            print "Wrong choice..." 
         values= []
         for idx in lindex:  
             idx= int(idx)
@@ -113,26 +115,17 @@ class Simulation():
         plt.xlabel('Time (s)')
         plt.grid(b=True, which='both')
         plt.show()
-#         (time1, y1) = _h5data.values("pwLine4.n.vr")
-#         fig = plt.figure()
-#     #     ax = fig.add_subplot(211)
-#         ax = fig.add_subplot(111, axisbg='w')
-#         
-#         ax.plot(time1/3600, y1, 'r', label='$y_1$')
-#         ax.set_xlabel('time [s]')
-#         ax.set_ylabel('Voltage [$^\circ$C]')
-#     #     ax.set_xticks(range(25))
-#     #     ax.set_xlim([0, 24])
-#         ax.legend()
-#         ax.grid(True)
-#         plt.show()
 
 def main(argv):
     simCity= Simulation(argv)
     simCity.loadSources()
     simCity.simulate()
     h5data= simCity.saveOutputs()
-    simCity.plotOutputs(h5data)
+    while (True):
+        simCity.plotOutputs(h5data)
+        value= raw_input("Plot another signal (y/n) ?: ")
+        if (value[0]== 'n'):
+            break
     
 if __name__ == '__main__':
     main(sys.argv[1:])
