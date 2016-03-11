@@ -118,7 +118,7 @@ class Simulation():
         plt.figure(1)
         for meas in values: 
             lasenyal= _h5data.get_senyal(meas) 
-            plt.plot(lasenyal.get_sampleTime(), lasenyal.get_signalReal())
+            plt.plot(lasenyal.sampletime, lasenyal.magnitude)
         plt.legend(values)
         plt.ylabel(lasenyal.component)
         plt.xlabel('Time (s)')
