@@ -8,11 +8,11 @@ from pyfmi import load_fmu
 from pymodelica import compile_fmu
 import sys, timeit
 
-from classes.OutputModelVar import OutputModelVar
-import classes.SimulationConfigJM as simconfig
-import classes.SimulationResources as simsource
-from classes.StreamH5File import OutputH5Stream
-import matplotlib.pyplot as plt  # plot library
+from classes import OutVariableStream as outvar
+import inout.SimulationConfigJM as simconfig
+import inout.SimulationResources as simsource
+from inout.StreamH5File import OutputH5Stream
+import matplotlib.pyplot as plt
 
 
 # import classes.SignalMeasurement as signal
@@ -31,7 +31,7 @@ class Simulation():
         ''' Loading configuration values for the simulator solver '''
         self.config= simconfig.SimulationConfigJM(sys.argv[2])
         ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
-        self.outputs= OutputModelVar(sys.argv[3])
+        self.outputs= outvar.OutVariableStream(sys.argv[3])
         
         
     def loadSources(self):
@@ -50,10 +50,12 @@ class Simulation():
         ''' TODO: LOG all command omc '''
         tic= timeit.default_timer()
         # Simulation process with JModelica
-        absolutePath= self.moPath + self.moFile
+        fullMoFile= self.moPath+ '/'+ self.moFile
+        fullMoLib= self.libPath+ '/'+ self.libFile
         '''build the fmu block from the modelica model '''
-        fmu_name= compile_fmu(self.moModel, absolutePath,
-                               compiler_options = {'extra_lib_dirs':self.libPath})
+#         fmu_name= compile_fmu(self.moModel, absolutePath,
+#                                compiler_options = {'extra_lib_dirs':self.libPath})
+        fmu_name= compile_fmu(self.moModel, [fullMoFile, fullMoLib])
         ''' Load the model '''
         model_fmu= load_fmu(fmu_name)
     

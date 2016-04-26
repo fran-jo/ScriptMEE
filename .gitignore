@@ -18,3 +18,8 @@ models/PowerSystems.mo
 *.exp
 *.lib
 models/success
+res/dymola/buildlog.txt
+res/dymola/dsfinal.txt
+res/dymola/dsin.txt
+res/dymola/dslog.txt
+*.png
