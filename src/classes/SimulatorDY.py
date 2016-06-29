@@ -86,6 +86,9 @@ class SimulatorDY(object):
         ''' Copy the output files of the simulator to the output folder
         '''
         self._resultFile+= '.mat'
+#         print "SimulatorDY ->", os.getcwd()
+#         print "SimulatorDY ->", self._resultFile
+#         print "SimulatorDY ->", self._outputDir
 #         print self._resultFile
         fileList=['buildlog.txt', 'dsfinal.txt', 'dsin.txt', 'dslog.txt',
                 'dsmodel*', 'dymosim', 'dymosim.exe','simulator.log',
