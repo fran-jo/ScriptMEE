@@ -54,6 +54,8 @@ class Simulation():
     #     s.exitSimulator(False)
     #     s.addParameters({'vf1': 0.2, 'pm1': 0.02})
         s.setStopTime(self.config.getStopTime())
+        s.setNumberOfIntervals(self.config.getNumberOfIntervals())
+        s.setTolerance(self.config.getTolerance())
         ''' setTimeOut kill the process if it does not finish in specific time'''
         s.setTimeOut(self.config.getTimeOut())
         s.setSolver(self.config.getMethod())
@@ -76,8 +78,8 @@ class Simulation():
         h5pmu= OutputH5Stream([self.outPath, resulth5, resultmat], 'dymola')
         h5pmu.open_h5(self.moModel) 
 #         print 'self.outputs.get_varList()', self.outputs.get_varList()
-        for compo, signal_names in self.outputs.get_varList():
-            l_signals= signal_names.split(',')
+        for compo, signalname in self.outputs.get_varList():
+            l_signals= signalname.split(',')
             h5pmu.set_senyalRect(compo, l_signals[0], l_signals[1])
 #             print 'l_signals', l_signals
             h5pmu.save_h5Names(compo, l_signals) 

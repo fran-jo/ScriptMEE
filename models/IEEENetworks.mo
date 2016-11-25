@@ -534,34 +534,31 @@ package IEEENetworks "Different networks from IEEE"
   end IEEE_9Bus_iPSLnov15;
 
   model CIM_IEEE_9Bus
-    iPSL.Electrical.Branches.PwLine Ln46(
+    OpenIPSL.Electrical.Branches.PwLine Ln46(
       R=0.017000000923871994,
       X=0.09200000017881393,
       G=0,
       B=0.07900000363588333) "annotation()";
-    iPSL.Electrical.Buses.Bus BUS4 "annotation()";
-    iPSL.Electrical.Buses.Bus BUS2 "annotation()";
-    iPSL.Electrical.Buses.Bus BUS7 "annotation()";
-    iPSL.Electrical.Buses.Bus BUS6 "annotation()";
-    iPSL.Electrical.Loads.PSSE.Load Ld8(
-      S_i(re=0, im=0),
-      S_y(re=0, im=0),
-      S_p(re=1, im=0.3499999940395355),
-      angle_0=-91.6318588256836,
-      V_0=1.0116652250289917,
+    OpenIPSL.Electrical.Buses.Bus BUS4 "annotation()";
+    OpenIPSL.Electrical.Buses.Bus BUS2 "annotation()";
+    OpenIPSL.Electrical.Buses.Bus BUS7 "annotation()";
+    OpenIPSL.Electrical.Buses.Bus BUS6 "annotation()";
+    OpenIPSL.Electrical.Loads.PSSE.Load Ld8(
+      angle_0=14.38232,
+      V_0=1.016395,
       P_0=1,
       Q_0=0,
       V_b=230) "something here" annotation ();
-    iPSL.Electrical.Buses.Bus BUS8 "annotation()";
-    iPSL.Electrical.Machines.PSSE.GENROU.GENROU Gn2(
+    OpenIPSL.Electrical.Buses.Bus BUS8 "annotation()";
+    OpenIPSL.Electrical.Machines.PSSE.GENROU Gn2(
       S_b=100,
       M_b=320,
       V_b=18,
       V_0=1.030107021331787,
-      angle_0=-82.5199966430664,
-      P_0=177.21009826660156,
-      Q_0=12.977800369262695,
-      R_a=0,
+      angle_0=22.88218,
+      P_0=162.7303,
+      Q_0=8.689249,
+      R_a=0.00001,
       Xl=0.10000000149011612,
       H=3.3299999237060547,
       D=0.6700000166893005,
@@ -577,75 +574,90 @@ package IEEENetworks "Different networks from IEEE"
       Xq=1.659999966621399,
       Xpq=0.3700000047683716,
       Xppq=0.20999999344348907) "something here" annotation ();
-    iPSL.Electrical.Branches.PwLine Ln57(
+    OpenIPSL.Electrical.Branches.PwLine Ln57(
       R=0.03200000151991844,
       X=0.16099999845027924,
       G=0,
       B=0.15299999713897705) "annotation()";
-    iPSL.Electrical.Buses.Bus BUS5 "annotation()";
-    iPSL.Electrical.Loads.PSSE.Load Ld6(
-      S_i(re=0, im=0),
-      S_y(re=0, im=0),
-      S_p(re=0.8999999761581421, im=0.30000001192092896),
-      angle_0=-96.99684143066406,
-      V_0=1.010051965713501,
+    OpenIPSL.Electrical.Buses.Bus BUS5 "annotation()";
+    OpenIPSL.Electrical.Loads.PSSE.Load Ld6(
+      angle_0=9.977392,
+      V_0=1.01181,
       P_0=1,
       Q_0=0,
       V_b=230) "something here" annotation ();
-    iPSL.Electrical.Branches.PwLine Ln45(
+    OpenIPSL.Electrical.Branches.PwLine Ln45(
       R=0.009999999776482582,
       X=0.08500000089406967,
       G=0,
       B=0.08799999952316284) "annotation()";
-    iPSL.Electrical.Loads.PSSE.Load Ld5(
-      S_i(re=0, im=0),
-      S_y(re=0, im=0),
-      S_p(re=1.25, im=0.5),
-      angle_0=-97.19761657714844,
-      V_0=0.993704617023468,
+    OpenIPSL.Electrical.Loads.PSSE.Load Ld5(
+      angle_0=9.677315,
+      V_0=0.995745,
       P_0=1,
       Q_0=0,
       V_b=230) "something here" annotation ();
-    iPSL.Electrical.Branches.PwLine Ln89(
+    OpenIPSL.Electrical.Branches.PwLine Ln89(
       R=0.011900000274181366,
       X=0.10080000013113022,
       G=0,
       B=0.10450000315904617) "annotation()";
-    iPSL.Electrical.Buses.Bus BUS9 "annotation()";
-    iPSL.Electrical.Branches.PSSE.TwoWindingTransformer T3(
+    OpenIPSL.Electrical.Buses.Bus BUS9 "annotation()";
+    OpenIPSL.Electrical.Branches.PSSE.TwoWindingTransformer T3(
       R=0,
       X=0.0625,
       G=0,
       B=0,
+      ANG1=1,
+      S_n=1,
+      CW=1,
+      CZ=1,
       t2=1,
-      PrimaryOnFromSide=false,
-      t1=1) "something here" annotation ();
-    iPSL.Electrical.Branches.PSSE.TwoWindingTransformer T1(
+      VB2=230,
+      VNOM2=230,
+      t1=1,
+      VB1=13,
+      VNOM1=13) "something here" annotation ();
+    OpenIPSL.Electrical.Branches.PSSE.TwoWindingTransformer T1(
       R=0,
       X=0.05860000103712082,
       G=0,
       B=0,
+      ANG1=1,
+      S_n=1,
+      CW=1,
+      CZ=1,
       t2=1,
-      PrimaryOnFromSide=false,
-      t1=1) "something here" annotation ();
-    iPSL.Electrical.Branches.PSSE.TwoWindingTransformer T2(
+      VB2=230,
+      VNOM2=230,
+      t1=1,
+      VB1=16.5,
+      VNOM1=16.5) "something here" annotation ();
+    OpenIPSL.Electrical.Branches.PSSE.TwoWindingTransformer T2(
       R=0,
       X=0.0575999990105629,
       G=0,
       B=0,
+      ANG1=1,
+      S_n=1,
+      CW=1,
+      CZ=1,
       t1=1,
-      PrimaryOnFromSide=true,
-      t2=1) "something here" annotation ();
-    iPSL.Electrical.Buses.Bus BUS3 "annotation()";
-    iPSL.Electrical.Machines.PSSE.GENSAL.GENSAL Gn1(
+      VB1=18,
+      VNOM1=18,
+      t2=1,
+      VB2=230,
+      VNOM2=230) "something here" annotation ();
+    OpenIPSL.Electrical.Buses.Bus BUS3 "annotation()";
+    OpenIPSL.Electrical.Machines.PSSE.GENSAL Gn1(
       S_b=100,
       M_b=275,
       V_b=16.5,
       V_0=1.0381430387496948,
-      angle_0=-94.33999633789062,
-      P_0=58.78450012207031,
-      Q_0=27.511499404907227,
-      R_a=0,
+      angle_0=13.66273,
+      P_0=71.41698,
+      Q_0=25.93099,
+      R_a=0.00001,
       Xl=0.05999999865889549,
       H=9.550000190734863,
       D=1.600000023841858,
@@ -659,26 +671,26 @@ package IEEENetworks "Different networks from IEEE"
       Xppd=0.10000000149011612,
       Xq=0.23999999463558197,
       Xppq=0.10000000149011612) "something here" annotation ();
-    iPSL.Electrical.Buses.Bus BUS1 "annotation()";
-    iPSL.Electrical.Events.PwFault f_BUS8(
+    OpenIPSL.Electrical.Buses.Bus BUS1 "annotation()";
+    OpenIPSL.Electrical.Events.PwFault f_BUS8(
       R=0.1,
-      X=0.009999999776482582,
-      t1=0.9,
-      t2=1.1) "annotation()";
-    iPSL.Electrical.Branches.PwLine Ln78(
+      X=0.001,
+      t1=2,
+      t2=2.15) "annotation()";
+    OpenIPSL.Electrical.Branches.PwLine Ln78(
       R=0.008500000461935997,
       X=0.07199999690055847,
       G=0,
       B=0.07450000196695328) "annotation()";
-    iPSL.Electrical.Machines.PSSE.GENROU.GENROU Gn3(
+    OpenIPSL.Electrical.Machines.PSSE.GENROU Gn3(
       S_b=100,
       M_b=300,
       V_b=13,
       V_0=1.0229270458221436,
-      angle_0=-87.72000122070312,
-      P_0=89.55909729003906,
-      Q_0=-12.135199546813965,
-      R_a=0,
+      angle_0=18.3354,
+      P_0=84.89243,
+      Q_0=-12.45501,
+      R_a=0.00001,
       Xl=0.15360000729560852,
       H=2.3499999046325684,
       D=0.4699999988079071,
@@ -694,7 +706,7 @@ package IEEENetworks "Different networks from IEEE"
       Xq=1.6100000143051147,
       Xpq=0.3199999928474426,
       Xppq=0.20999999344348907) "something here" annotation ();
-    iPSL.Electrical.Branches.PwLine Ln69(
+    OpenIPSL.Electrical.Branches.PwLine Ln69(
       R=0.039000000804662704,
       X=0.17000000178813934,
       G=0,

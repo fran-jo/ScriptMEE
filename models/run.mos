@@ -2,9 +2,9 @@
 cd("C:/Users/fragom/PhD_CIM/PYTHON/ScriptMEE/models");
 Modelica.Utilities.Files.remove("simulator.log");
 openModel("package.mo");
-openModel("CIM_IEEE_9Bus.mo");
+openModel("cim_smib_genroe_esdc1a.mo");
 OutputCPUtime:=true;
-modelInstance="CIM_IEEE_9Bus";
-simulateModel(modelInstance, startTime=0, stopTime=10.0, method="dassl", tolerance=1e-06, resultFile="CIM_IEEE_9Bus");
+modelInstance="cim_smib_genroe_esdc1a";
+simulateModel(modelInstance, startTime=0, stopTime=10.0, method="dassl", tolerance=1e-4, resultFile="cim_smib_genroe_esdc1a", numberOfIntervals=1000);
 savelog("simulator.log");
 Modelica.Utilities.System.exit();

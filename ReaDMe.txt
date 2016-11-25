@@ -7,18 +7,18 @@ Dependencies
 	- modelicares 0.8.2
 
 Structure of the Eclipse project
-1. ROOT_FOLDER/
-2. ROOT_FOLDER/config/
-3. ROOT_FOLDER/models/
-4. ROOT_FOLDER/src/classes/
-5. ROOT_FOLDER/src/data/
-6. ROOT_FOLDER/src/script/
+1) ROOT_FOLDER/
+2) ROOT_FOLDER/config/
+3) ROOT_FOLDER/models/
+4) ROOT_FOLDER/src/classes/
+5) ROOT_FOLDER/src/data/
+6) ROOT_FOLDER/src/script/
 
 Folder 2) stores .properties files with information about:
 	a) the models to simulate,
 	b) basic configuration for compilers
 
-Folder 3) contains .properties files with the names of variables that will be saved
+Folder 3) contains the models for simulation and .properties files with the names of variables that will be saved
 	i.e. smib2lwfault_varList.properties
 
 Folder 6) contains the three main scripts of the project

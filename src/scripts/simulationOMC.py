@@ -85,19 +85,19 @@ class Simulation():
         h5Name=  self.moModel+ '_&'+ 'openmodelica'+ '.h5'
         resulth5= self.outPath+ '/'+ h5Name
         # create .h5 for writing
-        h5pmu= OutputH5Stream([self.outPath,resulth5,resultmat], 'omc')
+        h5pmu= OutputH5Stream([self.outPath,resulth5,resultmat], 'openmodelica')
         h5pmu.open_h5(self.moModel)    
         '''This loop to store output signals, for analysis and plotting, into memory'''
-        for meas, var in self.outputs.get_varList():
-            modelSignal= var.split(',')
+        for meas, signalname in self.outputs.get_varList():
+            modelSignal= signalname.split(',')
             nameComponent= meas.split('.')[0]
 #             nameMeasurement= meas.split('.')[1]
             if len(modelSignal)> 1:
                 h5pmu.set_senyalRect(meas, modelSignal[0], modelSignal[1])
             else:
                 h5pmu.set_senyalRect(meas, modelSignal[0], [])
-        h5pmu.save_h5Names(nameComponent, meas) 
-        h5pmu.save_h5Values(nameComponent) 
+            h5pmu.save_h5Names(nameComponent, meas) 
+            h5pmu.save_h5Values(nameComponent) 
         h5pmu.close_h5()
         ''' object h5 file with result data'''
         return h5pmu
