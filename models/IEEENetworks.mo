@@ -867,7 +867,7 @@ package IEEENetworks "Different networks from IEEE"
       V_0=1.022927,
       angle_0=-87.72,
       P_0=89.5591,
-      Q_0=-12.1352) annotation (Placement(visible=true, transformation(
+      Q_0=12.1352) annotation (Placement(visible=true, transformation(
           origin={110,50},
           extent={{-10,-10},{10,10}},
           rotation=180)));

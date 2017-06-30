@@ -12,7 +12,7 @@ import inout.SimulationResources as simsource
 from inout.StreamH5File import OutputH5Stream
 import matplotlib.pyplot as plt
 
-class Simulation():
+class SimulationOMC(object):
     
     def __init__(self, argv):
         # TODO: LOG parameters 
@@ -26,11 +26,9 @@ class Simulation():
         ''' Loading configuration values for the simulator solver '''
         self.config= simconfig.SimulationConfigOMC(sys.argv[2])
         ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
-        # TODO use StreamMATFile for storing output variables to plot
         self.outputs= outvar.OutVariableStream(sys.argv[3])
          
     def loadSources(self):
-        # TODO: LOG sources files and models
         self.sources.load_Properties()
         self.moPath= self.sources.get_modelPath()
         self.moFile= self.sources.get_modelFile()
@@ -39,13 +37,11 @@ class Simulation():
         self.moModel= self.sources.get_modelName()
         self.outPath= self.sources.get_outputPath()
         self.outputs.load_varList()
-        # TODO: LOG configuration 
         self.simOptions= self.config.setSimOptions()
         
     def simulate(self):
-        # TODO: LOG all command omc
         OMPython = OMCSession()
-        tic= timeit.default_timer()
+#         tic= timeit.default_timer()
         objCOMC= comc.CommandOMC()
         '''Load Modelica library'''
         OMPython.execute("loadModel(Modelica)")
@@ -55,16 +51,16 @@ class Simulation():
         '''loading the model we want to simulate'''
         command= objCOMC.loadFile(self.moPath, self.moFile)
         print '2) Command', command
+        # here, show the list of parameters we can modify, (variability= parameter)
+        
         success= OMPython.execute(command)
         result= None
         if (success):
-            # TODO: input values as parameters, in case they are needed for the model
             #command= objCOMC.simulate(self.moModel, self.simOptions, 'vf1=0.1,pm1=0.001')
             command= objCOMC.simulate(self.moModel, self.simOptions, False)
             print '3) Command', command
             result= OMPython.execute(command)
             print '4) Result', result
-        # TODO: Handle when simulation fails, no result file
 #         inMemoryResultFile= OMPython.get(result, 'SimulationResults.resultFile')
 #         print '5) Result file ', inMemoryResultFile
 #         resultfile= objCOMC.saveResult(inMemoryResultFile, self.outPath)
@@ -72,9 +68,8 @@ class Simulation():
         simulationResults= result['SimulationResults']
         print '6) Result file', simulationResults['resultFile']
         resultfile= objCOMC.saveResult(simulationResults['resultFile'], self.outPath)
-        toc= timeit.default_timer()
-        print 'Simulation time ', toc- tic
-        # TODO: study the units of elapsed time 
+#         toc= timeit.default_timer()
+#         print 'Simulation time ', toc- tic 
         return resultfile
     
     def saveOutputs(self, _resultfile):
@@ -138,7 +133,7 @@ class Simulation():
     
     
 def main(argv):
-    simCity= Simulation(argv)
+    simCity= SimulationOMC(argv)
     simCity.loadSources()
     results= simCity.simulate()
     h5data= simCity.saveOutputs(results)

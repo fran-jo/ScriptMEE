@@ -6,7 +6,7 @@ Created on 11 apr 2014
 import shutil
 
 
-class CommandOMC:
+class CommandOMC(object):
     '''
     classdocs
     '''
@@ -16,32 +16,40 @@ class CommandOMC:
         Constructor
         '''
     
-    def loadFile(self, _path, _model):
+    def loadModelica(self):
+        return 'loadModel(Modelica)'
+    
+    def loadFile(self, fichero= ''):
         strcommand = []
         strcommand.append('loadFile(')
         strcommand.append('"')
-        strcommand.append(_path)
-        strcommand.append('/')
-        strcommand.append(_model)
+        strcommand.append(fichero)
         strcommand.append('"')
         strcommand.append(')')
         command = ''.join(strcommand)
         command = command.replace('\\','/') 
         return command
     
-    def simulate(self, _model, _simOptions, _modelParams):
+    def simulate(self, model, simConfig, modelParams):
         strcommand= []
         strcommand.append('simulate(')
-        strcommand.append(_model)
-        strcommand.append(_simOptions)
-        if (_modelParams):
+        strcommand.append(model)
+        strcommand.append(self.__setExperimentConfig(simConfig))
+        if (modelParams):
             strcommand.append(',simflags="-override ')
-            strcommand.append(_modelParams)
+            strcommand.append(modelParams)
             strcommand.append('"')
         strcommand.append(')')
         command = ''.join(strcommand) 
         command= command.replace('\\','/')
         return command
+    
+    def __setExperimentConfig(self, simConfig):
+        ''' creates a command string with simulation configuration values '''
+        simulate_options = ""
+        for k, v in simConfig.configuration.iteritems():
+            simulate_options = simulate_options + "," + str(k) + "=" + str(v)
+        return simulate_options
     
     def saveResult(self, filename, outPath):
         '''TODO: Handle when simulation fails, no result file '''
@@ -77,6 +85,7 @@ class CommandOMC:
         strcommand= []
         strcommand.append('getClassNames(')
         strcommand.append(_model)
+        strcommand.append(', recursive= true')
         strcommand.append(')')
         command= ''.join(strcommand)
         return command

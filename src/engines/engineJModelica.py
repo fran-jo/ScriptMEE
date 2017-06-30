@@ -6,46 +6,23 @@ Created on 4 apr 2014
 '''
 from pyfmi import load_fmu
 from pymodelica import compile_fmu
-import sys, timeit
 
-from classes import OutVariableStream as outvar
-import inout.SimulationConfigJM as simconfig
-import inout.SimulationResources as simsource
 from inout.StreamH5File import OutputH5Stream
 import matplotlib.pyplot as plt
 
 
 # import classes.SignalMeasurement as signal
 # import classes.FormatMeasurement as fm
-class Simulation():
+class EngineJM(object):
     
-    def __init__(self, argv):
-        '''TODO: LOG parameters '''
-        ''' sys.argv is array of parameters 
-        sys.argv[1]: file with simulation resources, a.k.a. model file, library file, output folder,
-        sys.argv[2]: file with configuration of the simulator compiler
-        sys.argv[3]: file containing the name of outputs of the model to be saved in h5 and plotted
-        '''
+    def __init__(self, sources= None, experiment= None):
         ''' Loading simulations resources. Parameters related to models to be simulated and libraries'''
-        self.sources= simsource.SimulationResources([sys.argv[1],'r'])
+        self.__sources= sources
         ''' Loading configuration values for the simulator solver '''
-        self.config= simconfig.SimulationConfigJM(sys.argv[2])
-        ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
-        self.outputs= outvar.OutVariableStream(sys.argv[3])
-        
-        
-    def loadSources(self):
-        ''' TODO: LOG sources files and models '''
-        self.sources.load_Properties()
-        self.moPath= self.sources.get_modelPath()
-        self.moFile= self.sources.get_modelFile()
-        self.libPath= self.sources.get_libraryPath()
-        self.libFile= self.sources.get_libraryFile()
-        self.moModel= self.sources.get_modelName()
-        self.outPath= self.sources.get_outputPath()
-        self.outputs.load_varList()
+        self.__experiment= experiment
         
     def simulate(self):
+        ''' TODO: LOG all command omc '''
 #         tic= timeit.default_timer()
         # Simulation process with JModelica
         fullMoFile= self.moPath+ '/'+ self.moFile
@@ -123,18 +100,4 @@ class Simulation():
         plt.xlabel('Time (s)')
         plt.grid(b=True, which='both')
         plt.show()
-         
-    #     command= objCOMC.plot(['bus4.p.vr'])
-    #     OMPython.execute(command)
-    #     print command
-
-def main(argv):
-    simCity= Simulation(argv)
-    simCity.loadSources()
-    results= simCity.simulate()
-    h5data= simCity.saveOutputs(results)
-    simCity.plotOutputs(h5data)
-
-if __name__ == '__main__':
-    main(sys.argv[1:])
     

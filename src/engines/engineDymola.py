@@ -3,58 +3,43 @@ Created on 4 apr 2014
 
 @author: fragom
 '''
-import os, sys, timeit
+import os
 
-from classes import OutVariableStream as outvar
-import inout.SimulationResources as simsource 
-import inout.SimulationConfigDY as simconfig  
+# from classes import OutVariableStream as outvar  
 from classes.SimulatorDY import SimulatorDY 
 from inout.StreamH5File import OutputH5Stream 
 import matplotlib.pyplot as plt
 
 
-class SimulationDY(object):
+class EngineDY(object):
     
-    def __init__(self, argv):
-        ''' sys.argv is array of parameters 
-        sys.argv[1]: file with simulation resources, a.k.a. model file, library file, output folder 
-        sys.argv[2]: file with configuration of the simulator compiler
-        sys.argv[3]: file containing the name of outputs of the model to be saved in h5 and plotted
-        '''
+    def __init__(self, sources= None, experiment= None):
         ''' Loading simulations resources. Parameters related to models to be simulated and libraries'''
-        self.sources= simsource.SimulationResources([sys.argv[1],'r'])
+        self.__sources= sources
         ''' Loading configuration values for the simulator solver '''
-        self.config= simconfig.SimulationConfigDY(sys.argv[2])
-        ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
-        self.outputs= outvar.OutVariableStream(sys.argv[3])
-        
-    def loadSources(self):
-        self.sources.load_Properties()
-        self.moPath= self.sources.get_modelPath()
-        self.moFile= self.sources.get_modelFile()
-        self.libPath= self.sources.get_libraryPath()
-        self.libFile= self.sources.get_libraryFile()
-        self.moModel= self.sources.get_modelName()
-        self.outPath= self.sources.get_outputPath()
-        self.outputs.load_varList()
-        self.simOptions= self.config.setSimOptions()
+        self.__experiment= experiment
+#         ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
+#         self.outputs= outvar.OutVariableStream(sys.argv[3])
         
     def simulate(self):
+#         tic= timeit.default_timer()
         ''' add library path to MODELICAPATH, to recognize folder where library is available '''
-        os.environ["MODELICAPATH"] = self.libPath
+        os.environ["MODELICAPATH"] = self.__sources.libraryFolder
         ''' Change path to model folder '''
-        os.chdir(self.moPath)
+        os.chdir(self.__sources.modelFolder)
         
-        s= SimulatorDY([self.moModel, self.moFile, self.libFile, self.moPath, self.outPath])
+        s= SimulatorDY([self.__sources.modelName, self.__sources.modelFile,
+                        self.__sources.libraryFile, self.__sources.modelFolder,
+                        self.__sources.outputFolder])
     #     s.showGUI(True)
     #     s.exitSimulator(False)
     #     s.addParameters({'vf1': 0.2, 'pm1': 0.02})
-        s.setStopTime(self.config.getStopTime())
-        s.setNumberOfIntervals(self.config.getNumberOfIntervals())
-        s.setTolerance(self.config.getTolerance())
+        s.setStopTime(self.__experiment.stopTime)
+        s.setNumberOfIntervals(self.__experiment.numberOfIntervals)
+        s.setTolerance(self.__experiment.tolerance)
         ''' setTimeOut kill the process if it does not finish in specific time'''
-        s.setTimeOut(self.config.getTimeOut())
-        s.setSolver(self.config.getMethod())
+        s.setTimeOut('60')
+        s.setSolver(self.__experiment.method)
         s.showProgressBar(False)
     #     s.printModelAndTime()
         s.simulate()
@@ -63,15 +48,16 @@ class SimulationDY(object):
     
     def saveOutputs(self):
         '''
+        TODO: This has to change, after using ModelicaRes
         The structure of the saving format takes into account format measurements from PMU, form v/i, anglev/anglei 
         '''
-        resultmat= self.moModel.split('.')[-1]
+        resultmat= self.__sources.modelName.split('.')[-1]
         resultmat+= '.mat'
-        os.chdir(self.outPath)
-        h5Name=  self.moModel+ '_&'+ 'dymola'+ '.h5'
-        resulth5= self.outPath+ '/'+ h5Name
-        h5pmu= OutputH5Stream([self.outPath, resulth5, resultmat], 'dymola')
-        h5pmu.open_h5(self.moModel) 
+        os.chdir(self.__sources.outputFolder)
+        h5Name=  self.__sources.modelName+ '_&'+ 'dymola'+ '.h5'
+        resulth5= self.__sources.outputFolder+ '/'+ h5Name
+        h5pmu= OutputH5Stream([self.__sources.outputFolder, resulth5, resultmat], 'dymola')
+        h5pmu.open_h5(h5Name) 
 #         print 'self.outputs.get_varList()', self.outputs.get_varList()
         for compo, signalname in self.outputs.get_varList():
             l_signals= signalname.split(',')
@@ -102,6 +88,7 @@ class SimulationDY(object):
         return values
             
     def plotOutputs(self, _h5data):
+        ''' TODO: This has to change, after using ModelicaRes'''
         values= self.selectData(self.outputs.get_varNames())
         plt.figure(1)
         for meas in values: 
@@ -112,17 +99,3 @@ class SimulationDY(object):
         plt.xlabel('Time (s)')
         plt.grid(b=True, which='both')
         plt.show()
-
-def main(argv):
-    simCity= SimulationDY(argv)
-    simCity.loadSources()
-    simCity.simulate()
-    h5data= simCity.saveOutputs()
-    while (True):
-        simCity.plotOutputs(h5data)
-        value= raw_input("Plot another signal (y/n) ?: ")
-        if (value[0]== 'n'):
-            break
-    
-if __name__ == '__main__':
-    main(sys.argv[1:])
