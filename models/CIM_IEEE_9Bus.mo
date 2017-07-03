@@ -1,4 +1,3 @@
-within ;
 model cim_ieee_9bus "something here"
   OpenIPSL.Electrical.Branches.PwLine Ln46(
     R=0.017000000923871994,
