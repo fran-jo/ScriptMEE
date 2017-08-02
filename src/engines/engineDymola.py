@@ -7,7 +7,6 @@ import os
 
 # from classes import OutVariableStream as outvar  
 from classes.SimulatorDY import SimulatorDY 
-from inout.StreamH5File import OutputH5Stream 
 import matplotlib.pyplot as plt
 
 
@@ -46,56 +45,56 @@ class EngineDY(object):
 #         toc= timeit.default_timer()
 #         print 'Simulation time ', toc- tic
     
-    def saveOutputs(self):
-        '''
-        TODO: This has to change, after using ModelicaRes
-        The structure of the saving format takes into account format measurements from PMU, form v/i, anglev/anglei 
-        '''
-        resultmat= self.__sources.modelName.split('.')[-1]
-        resultmat+= '.mat'
-        os.chdir(self.__sources.outputFolder)
-        h5Name=  self.__sources.modelName+ '_&'+ 'dymola'+ '.h5'
-        resulth5= self.__sources.outputFolder+ '/'+ h5Name
-        h5pmu= OutputH5Stream([self.__sources.outputFolder, resulth5, resultmat], 'dymola')
-        h5pmu.open_h5(h5Name) 
-#         print 'self.outputs.get_varList()', self.outputs.get_varList()
-        for compo, signalname in self.outputs.get_varList():
-            l_signals= signalname.split(',')
-            h5pmu.set_senyalRect(compo, l_signals[0], l_signals[1])
-#             print 'l_signals', l_signals
-            h5pmu.save_h5Names(compo, l_signals) 
-            h5pmu.save_h5Values(compo) 
-        h5pmu.close_h5()
-        ''' object h5 file with result data'''
-        return h5pmu
-    
-    def selectData(self, arrayQualquiera):
-        count= 0
-        indexMapping={}
-        for i, meas in enumerate(arrayQualquiera):
-            print '[%d] %s' % (i, meas)
-            indexMapping[count]= i
-            count+= 1
-        try:
-            value= raw_input("Select which variable do you want to plot: ")
-            lindex = value.split()
-        except ValueError:
-            print "Wrong choice..." 
-        values= []
-        for idx in lindex:  
-            idx= int(idx)
-            values.append(arrayQualquiera[indexMapping[idx]])
-        return values
-            
-    def plotOutputs(self, _h5data):
-        ''' TODO: This has to change, after using ModelicaRes'''
-        values= self.selectData(self.outputs.get_varNames())
-        plt.figure(1)
-        for meas in values: 
-            lasenyal= _h5data.get_senyal(meas) 
-            plt.plot(lasenyal.sampletime, lasenyal.magnitude)
-        plt.legend(values)
-        plt.ylabel(lasenyal.component)
-        plt.xlabel('Time (s)')
-        plt.grid(b=True, which='both')
-        plt.show()
+#     def saveOutputs(self):
+#         '''
+#         TODO: This has to change, after using ModelicaRes
+#         The structure of the saving format takes into account format measurements from PMU, form v/i, anglev/anglei 
+#         '''
+#         resultmat= self.__sources.modelName.split('.')[-1]
+#         resultmat+= '.mat'
+#         os.chdir(self.__sources.outputFolder)
+#         h5Name=  self.__sources.modelName+ '_&'+ 'dymola'+ '.h5'
+#         resulth5= self.__sources.outputFolder+ '/'+ h5Name
+#         h5pmu= OutputH5Stream([self.__sources.outputFolder, resulth5, resultmat], 'dymola')
+#         h5pmu.open_h5(h5Name) 
+# #         print 'self.outputs.get_varList()', self.outputs.get_varList()
+#         for compo, signalname in self.outputs.get_varList():
+#             l_signals= signalname.split(',')
+#             h5pmu.set_senyalRect(compo, l_signals[0], l_signals[1])
+# #             print 'l_signals', l_signals
+#             h5pmu.save_h5Names(compo, l_signals) 
+#             h5pmu.save_h5Values(compo) 
+#         h5pmu.close_h5()
+#         ''' object h5 file with result data'''
+#         return h5pmu
+#     
+#     def selectData(self, arrayQualquiera):
+#         count= 0
+#         indexMapping={}
+#         for i, meas in enumerate(arrayQualquiera):
+#             print '[%d] %s' % (i, meas)
+#             indexMapping[count]= i
+#             count+= 1
+#         try:
+#             value= raw_input("Select which variable do you want to plot: ")
+#             lindex = value.split()
+#         except ValueError:
+#             print "Wrong choice..." 
+#         values= []
+#         for idx in lindex:  
+#             idx= int(idx)
+#             values.append(arrayQualquiera[indexMapping[idx]])
+#         return values
+#             
+#     def plotOutputs(self, _h5data):
+#         ''' TODO: This has to change, after using ModelicaRes'''
+#         values= self.selectData(self.outputs.get_varNames())
+#         plt.figure(1)
+#         for meas in values: 
+#             lasenyal= _h5data.get_senyal(meas) 
+#             plt.plot(lasenyal.sampletime, lasenyal.magnitude)
+#         plt.legend(values)
+#         plt.ylabel(lasenyal.component)
+#         plt.xlabel('Time (s)')
+#         plt.grid(b=True, which='both')
+#         plt.show()
