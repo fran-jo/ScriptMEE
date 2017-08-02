@@ -7,7 +7,6 @@ import os
 
 # from classes import OutVariableStream as outvar  
 from classes.SimulatorDY import SimulatorDY 
-import matplotlib.pyplot as plt
 
 
 class EngineDY(object):

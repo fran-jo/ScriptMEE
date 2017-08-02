@@ -23,3 +23,7 @@ res/dymola/dsfinal.txt
 res/dymola/dsin.txt
 res/dymola/dslog.txt
 *.png
+*.pydevproject
+*.mo
+*.order
+.pydevproject
