@@ -27,3 +27,4 @@ res/dymola/dslog.txt
 *.mo
 *.order
 .pydevproject
+*.pydevproject
