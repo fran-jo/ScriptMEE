@@ -1,11 +1,10 @@
 
 
 2) create script to export data
-2.1) read mat file from DY, OMC, JM
+2.1) read mat file from OMC, JM
 2.2) write into db/simulation folder
 
-3) Test script DY
-4) Test script OMC - check
+4) Test script OMC
 5) Test script JM
 
 TODO: script for linearization, root, poles, etc, DY and OMC
