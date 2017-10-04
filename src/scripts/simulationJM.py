@@ -14,9 +14,52 @@ import inout.SimulationResources as simsource
 from inout.StreamH5File import OutputH5Stream
 import matplotlib.pyplot as plt
 
+def load_Sources(__filesource):
+    __sources= SimulationResources([__filesource,'r'])
+    __sources.load_Properties()
+    print "Model Folder: "+ __sources.modelFolder
+    print "Model File: "+ __sources.modelFile
+    print "Model Name: "+ __sources.modelName
+    print "Library Folder: "+ __sources.libraryFolder
+    print "Library File: "+ __sources.libraryFile
+    print "Output Folder: "+ __sources.outputFolder
+    valuechange= raw_input("Do you want to change any value (y/n) ?: ")
+    if valuechange== 'y' or valuechange=='Y':
+        valueconfig= raw_input("Model Folder: ")
+        __sources.modelFolder= valueconfig if valueconfig!= '' else __sources.modelFolder
+        valueconfig= raw_input("Model File: ")
+        __sources.modelFile= valueconfig if valueconfig!= '' else __sources.modelFile
+        valueconfig= raw_input("Model Name: ")
+        __sources.modelName= valueconfig if valueconfig!= '' else __sources.modelName
+        valueconfig= raw_input("Library Folder: ")
+        __sources.libraryFolder= valueconfig if valueconfig!= '' else __sources.libraryFolder
+        valueconfig= raw_input("Output Folder: ")
+        __sources.outputFolder= valueconfig if valueconfig!= '' else __sources.outputFolder
+    return __sources
 
-# import classes.SignalMeasurement as signal
-# import classes.FormatMeasurement as fm
+def load_configuration(__fileconfig):
+    __solverconfig= SimulationConfigJM([__fileconfig,'r'])
+    __solverconfig.load_Properties()
+    print "Start Time: "+ __solverconfig.startTime
+    print "Stop File: "+ __solverconfig.stopTime
+    print "Number of Intervals: "+ __solverconfig.numberOfIntervals
+    print "Solver: "+ __solverconfig.method
+    print "Tolerance: "+ __solverconfig.tolerance
+    print "Output Format: "+ __solverconfig.outputFormat 
+    valuechange= raw_input("Do you want to change any value (y/n) ?: ")
+    if valuechange== 'y' or valuechange=='Y':
+        valueconfig= raw_input("Start Time: ")
+        __solverconfig.startTime= valueconfig if valueconfig!= '' else __solverconfig.startTime
+        valueconfig= raw_input("Stop File: ")
+        __solverconfig.stopTime= valueconfig if valueconfig!= '' else __solverconfig.stopTime
+        valueconfig= raw_input("Number of Intervals: ")
+        __solverconfig.numberOfIntervals= valueconfig if valueconfig!= '' else __solverconfig.numberOfIntervals
+        valueconfig= raw_input("Solver: ")
+        __solverconfig.method= valueconfig if valueconfig!= '' else __solverconfig.method
+        valueconfig= raw_input("Tolerance: ")
+        __solverconfig.tolerance= valueconfig if valueconfig!= '' else __solverconfig.tolerance
+    return __solverconfig
+
 class Simulation():
     
     def __init__(self, argv):

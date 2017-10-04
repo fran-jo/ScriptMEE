@@ -4,20 +4,29 @@ Created on 5 apr 2014
 @author: fragom
 '''
 
-from classes import CommandOMC
+from utils import CommandOMC
+from OMPython import OMCSession
+
 # from classes import OutVariableStream as outvar
 
 class EngineOMC(object):
     
-    def __init__(self, sources= None, experiment= None, omcConnection= None, results= None):
+    def __init__(self, sources= None, experiment= None, results= None):
         ''' Loading simulations resources. Parameters related to models to be simulated and libraries'''
         self.__sources= sources
         ''' Loading configuration values for the simulator solver '''
         self.__experiment= experiment
-        self.__omcSession= omcConnection
         self.__results= results
+        self.__omcSession= OMCSession()
 #         ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
 #         self.outputs= outvar.OutVariableStream(sys.argv[3])
+        
+    @property
+    def omcSession(self):
+        return self.__omcSession
+    @omcSession.setter
+    def omcSession(self, valor):
+        self.__omcSession= valor;
         
     def simulate(self):
         objCOMC= CommandOMC()

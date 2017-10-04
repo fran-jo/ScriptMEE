@@ -5,14 +5,11 @@ Created on 4 apr 2014
 '''
 import os, sys
 
-from classes import OutVariableStream as outvar
 from config import SimulationResources
-from config import SimulationConfigDY, SimulationConfigOMC, SimulationConfigJM  
-from classes.SimulatorDY import SimulatorDY 
+from config import SimulationConfigDY
 from modelicares import SimRes
-import matplotlib.pyplot as plt
 from engines.engineDymola import EngineDY
-from scripts.exportData import selectData
+from utils import ViewData
 
     
 def load_Sources(__filesource):
@@ -39,13 +36,7 @@ def load_Sources(__filesource):
     return __sources
     
 def load_configuration(__fileconfig):
-    valuecompiler= selectData(['DY','OMC','JM'], "Select the compiler: ")
-    if valuecompiler[0]== 'DY':
-        __solverconfig= SimulationConfigDY([__fileconfig,'r'])
-    if valuecompiler[0]== 'OMC':
-        __solverconfig= SimulationConfigOMC([__fileconfig,'r'])
-    if valuecompiler[0]== 'JM':
-        __solverconfig= SimulationConfigJM([__fileconfig,'r'])
+    __solverconfig= SimulationConfigDY([__fileconfig,'r'])
     __solverconfig.load_Properties()
     print "Start Time: "+ __solverconfig.startTime
     print "Stop File: "+ __solverconfig.stopTime
@@ -108,37 +99,6 @@ def simulate(__sources, __solverconfig):
 #         h5pmu.close_h5()
 #         ''' object h5 file with result data'''
 #         return h5pmu
-
-def selectData(arrayQualquiera, message):
-    count= 0
-    indexMapping={}
-    for i, meas in enumerate(arrayQualquiera):
-        print '[%d] %s' % (i, meas)
-        indexMapping[count]= i
-        count+= 1
-    try:
-        value= raw_input(message)
-        lindex = value.split()
-    except ValueError:
-        print "Wrong choice..." 
-    values= []
-    for idx in lindex:  
-        idx= int(idx)
-        values.append(arrayQualquiera[indexMapping[idx]])
-    return values
-        
-def plotOutputs(resData):
-    values= selectData(resData.names)
-    plt.figure(1)
-    for senyal in values: 
-        signal_magnitude= resData[senyal]
-        signal_sampletime= resData["time"]
-        plt.plot(signal_sampletime, signal_magnitude)
-    plt.legend(values)
-    plt.ylabel("Units (p.u.)")
-    plt.xlabel('Time (s)')
-    plt.grid(b=True, which='both')
-    plt.show()
     
 if __name__ == '__main__':
     sources= load_Sources(sys.argv[1])
@@ -146,7 +106,7 @@ if __name__ == '__main__':
     "simulate and return a ModelicaRes.SimRes object"
     resData= simulate(sources, solverconfig)
     while (True):
-        plotOutputs(resData)
+        ViewData.plotOutputs(resData)
         value= raw_input("Plot another signal (y/n) ?: ")
         if (value[0]== 'n'):
             break

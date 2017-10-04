@@ -63,19 +63,21 @@ class SimulationConfigDY(StreamConfiguration):
         self.__startTime = ''
         self.__stopTime= ''
         self.__numberOfIntervals= ''
+        self.__fixedStepSize= ''
         self.__tolerance= ''
         self.__method= ''
         self.__outputFormat= ''
         self.__modelName= ''
         StreamConfiguration.__init__(self, params)
         self._properties= {'startTime':'','stopTime':'','numberOfIntervals':'',\
-                          'tolerance':'','method':'','outputFormat':''}
+                          'fixedStepSize':'','tolerance':'','method':'','outputFormat':''}
         
     def load_Properties(self):
         StreamConfiguration.load_Properties(self)
         self.__startTime = self._properties['startTime'].rstrip('\n')
         self.__stopTime= self._properties['stopTime'].rstrip('\n')
         self.__numberOfIntervals= self._properties['numberOfIntervals'].rstrip('\n')
+        self.__fixedStepSize= self._properties['fixedStepSize'].rstrip('\n')
         self.__tolerance= self._properties['tolerance'].rstrip('\n')
         self.__method= self._properties['method'].rstrip('\n')
         self.__outputFormat= self._properties['outputFormat'].rstrip('\n')
@@ -162,12 +164,5 @@ class SimulationConfigDY(StreamConfiguration):
         ''' creates a command string with simulation configuration values '''
         simulate_options = ""
         for k, v in self._properties.iteritems():
-#             if k in self.set_sim_options:
-#                 i = self.set_sim_options.index(k)
-#                 if v != None and v != "":
-#                     if k == "algorithmName":
-#                         v = "\"" + str(v).lower() + '\"'
-#                     elif k == "outputFormat":
-#                         v = "\"" + str(v).lower() + '\"'
-                    simulate_options = simulate_options + "," + str(k) + "=" + str(v)
+            simulate_options = simulate_options + "," + str(k) + "=" + str(v)
         return simulate_options
