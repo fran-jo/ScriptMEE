@@ -1,5 +1,4 @@
 
-
 2) create script to export data
 2.1) read mat file from OMC, JM
 2.2) write into db/simulation folder

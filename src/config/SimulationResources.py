@@ -16,17 +16,17 @@ class StreamProperties(object):
         params[0]: .properties file
         params[1]: reading mode
         '''
-        self.fitxer= params[0].replace('\\','/')
-        self.readingMode= params[1]
+        self.__fitxer= params[0].replace('\\','/')
+        self.__readingMode= params[1]
         self._properties= {}
         
     def save_Properties(self):
-        fle= open(self.fitxer,'w')
+        fle= open(self.__fitxer,'w')
         for key in self._properties:
             fle.writelines(key+"="+str(self._properties[key])+'\n')
     
     def load_Properties(self):
-        fle= open(self.fitxer,self.readingMode)
+        fle= open(self.__fitxer,self.__readingMode)
         for line in fle:
             options=line.split('=')
             self._properties[options[0]]= options[1]
@@ -38,7 +38,7 @@ class StreamProperties(object):
         '''
         return self._properties.values()
     
-class SimulationResources(StreamProperties):
+class CompilerResources(StreamProperties):
     '''
     classdocs
     cimPath= ''

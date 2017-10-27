@@ -5,7 +5,7 @@ Created on 4 apr 2014
 '''
 import os, sys
 
-from config import SimulationResources
+from config import CompilerResources
 from config import SimulationConfigDY
 from modelicares import SimRes
 from engines.engineDymola import EngineDY
@@ -13,7 +13,7 @@ from utils import ViewData
 
     
 def load_Sources(__filesource):
-    __sources= SimulationResources([__filesource,'r'])
+    __sources= CompilerResources([__filesource,'r'])
     __sources.load_Properties()
     print "Model Folder: "+ __sources.modelFolder
     print "Model File: "+ __sources.modelFile

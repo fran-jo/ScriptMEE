@@ -1,5 +1,6 @@
-Script running with Python 2.7.8
+
 Dependencies
+	- Python 2.7.8
 	- matplolib 1.2
 	- numpy 1.9.2
 	- h5py 2.3
@@ -10,16 +11,16 @@ Structure of the Eclipse project
 1) ROOT_FOLDER/
 2) ROOT_FOLDER/config/
 3) ROOT_FOLDER/models/
-4) ROOT_FOLDER/src/classes/
-5) ROOT_FOLDER/src/data/
+4) ROOT_FOLDER/src/config/
+5) ROOT_FOLDER/src/engines/
 6) ROOT_FOLDER/src/script/
+7) ROOT_FOLDER/src/utilsmee/
 
 Folder 2) stores .properties files with information about:
 	a) the models to simulate,
 	b) basic configuration for compilers
 
-Folder 3) contains the models for simulation and .properties files with the names of variables that will be saved
-	i.e. smib2lwfault_varList.properties
+Folder 3) contains the models to be simulated
 
 Folder 6) contains the three main scripts of the project
 	simulationDY.py for simulations using Dymola compiler
@@ -30,7 +31,6 @@ Each script need three input files, in this order:
 	simParametersXX.properties
 	simConfigurationXX.properties	
 	<nameModel>_varList.properties
-	
 	
 Selection of signals from h5 (h5 files organized information within groups of data and data sets
 The structure of the resulting files are
