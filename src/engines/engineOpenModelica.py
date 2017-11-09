@@ -4,7 +4,7 @@ Created on 5 apr 2014
 @author: fragom
 '''
 
-from utils import CommandOMC
+from utilsmee import CommandOMC
 from OMPython import OMCSession
 
 # from classes import OutVariableStream as outvar

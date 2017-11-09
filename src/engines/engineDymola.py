@@ -8,9 +8,8 @@ import datetime, subprocess, time
 
 # from classes import OutVariableStream as outvar  
 from classes.SimulatorDY import SimulatorDY 
-from modelicares.exps.simulators import dymola_script
-from modelicares.simres import SimRes
-from buildingspy.io import outputfile
+# from modelicares.exps.simulators import dymola_script
+# from modelicares.simres import SimRes
 
 class EngineDY(object):
     __experiment= {}
@@ -106,21 +105,21 @@ class EngineDY(object):
 #         toc= timeit.default_timer()
 #         print 'Simulation time ', toc- tic
 
-    def simulate_MoRes(self):
-        """ create modelica script """
-        runScriptName = self.__sources.modelFolder+ '/run.mos'
-        extra_lib= self.__sources.libraryFolder+ '/'+ self.__sources.libraryFile
-        with dymola_script(runScriptName, working_dir=self.__sources.modelFolder,
-                           packages=[self.__sources.modelFile,self.__sources.libraryFolder]) as simulator:
-            simulator.startTime= self.__experiment["startTime"]
-            simulator.stopTime = self.__experiment["stopTime"]
-            simulator.numberOfIntervals= self.__experiment["numberOfIntervals"]
-            simulator.method= self.__experiment["solver"]
-            simulator.tolerance= self.__experiment["tolerance"]
-            simulator.resultFile= self.__experiment["resultFile"]
-            simulator.run(self.__sources.modelName)
-        result= SimRes(self.__sources.modelName+'.mat')
-        return result
+#     def simulate_MoRes(self):
+#         """ create modelica script """
+#         runScriptName = self.__sources.modelFolder+ '/run.mos'
+#         extra_lib= self.__sources.libraryFolder+ '/'+ self.__sources.libraryFile
+#         with dymola_script(runScriptName, working_dir=self.__sources.modelFolder,
+#                            packages=[self.__sources.modelFile,self.__sources.libraryFolder]) as simulator:
+#             simulator.startTime= self.__experiment["startTime"]
+#             simulator.stopTime = self.__experiment["stopTime"]
+#             simulator.numberOfIntervals= self.__experiment["numberOfIntervals"]
+#             simulator.method= self.__experiment["solver"]
+#             simulator.tolerance= self.__experiment["tolerance"]
+#             simulator.resultFile= self.__experiment["resultFile"]
+#             simulator.run(self.__sources.modelName)
+#         result= SimRes(self.__sources.modelName+'.mat')
+#         return result
 
     def linearize(self, metodo):
         pathModelicaLinearize= "C:\Program Files (x86)\Dymola 2017 FD01\Modelica\Library\Modelica_LinearSystems2 2.3.4"

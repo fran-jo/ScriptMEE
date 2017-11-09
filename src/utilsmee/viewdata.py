@@ -4,7 +4,7 @@ Created on 4 okt. 2017
 @author: fragom
 '''
 
-from modelicares import SimRes
+# from modelicares import SimRes
 from matplotlib import pyplot as mplt
 
 class ViewData(object):
