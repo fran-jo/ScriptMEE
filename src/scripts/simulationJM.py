@@ -15,7 +15,7 @@ from inout.StreamH5File import OutputH5Stream
 import matplotlib.pyplot as plt
 
 def load_Sources(__filesource):
-    __sources= SimulationResources([__filesource,'r'])
+    __sources= CompilerResources([__filesource,'r'])
     __sources.load_Properties()
     print "Model Folder: "+ __sources.modelFolder
     print "Model File: "+ __sources.modelFile
@@ -38,7 +38,7 @@ def load_Sources(__filesource):
     return __sources
 
 def load_configuration(__fileconfig):
-    __solverconfig= SimulationConfigJM([__fileconfig,'r'])
+    __solverconfig= JModelicaConfiguration([__fileconfig,'r'])
     __solverconfig.load_Properties()
     print "Start Time: "+ __solverconfig.startTime
     print "Stop File: "+ __solverconfig.stopTime
@@ -70,9 +70,9 @@ class Simulation():
         sys.argv[3]: file containing the name of outputs of the model to be saved in h5 and plotted
         '''
         ''' Loading simulations resources. Parameters related to models to be simulated and libraries'''
-        self.sources= simsource.SimulationResources([sys.argv[1],'r'])
+        self.sources= simsource.CompilerResources([sys.argv[1],'r'])
         ''' Loading configuration values for the simulator solver '''
-        self.config= simconfig.SimulationConfigJM(sys.argv[2])
+        self.config= simconfig.JModelicaConfiguration(sys.argv[2])
         ''' Loading output variables of the model, their values will be stored in h5 and plotted '''
         self.outputs= outvar.OutVariableStream(sys.argv[3])
         

@@ -4,15 +4,15 @@ Created on 5 apr 2014
 @author: fragom
 '''
 import sys, os
-from config import SimulationResources
+from config import CompilerResources
 from config import SimulationConfigOMC
 from engines.engineOpenModelica import EngineOMC
 from modelicares import SimRes
-from utils import ViewData
+from utilsmee import ViewData
 
          
 def load_Sources(__filesource):
-    __sources= SimulationResources([__filesource,'r'])
+    __sources= CompilerResources([__filesource,'r'])
     __sources.load_Properties()
     print "Model Folder: "+ __sources.modelFolder
     print "Model File: "+ __sources.modelFile

@@ -4,7 +4,7 @@ Read / Write values for the options of the different simulators we will implemen
 @author: fragom
 '''
 
-class SimulationConfigJM:
+class JModelicaConfiguration:
     '''
     JModelica Configuration
     start_time=0

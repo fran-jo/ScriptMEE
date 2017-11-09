@@ -4,7 +4,7 @@ Created on 4 apr 2014
 @author: fragom
 '''
 
-class StreamConfiguration(object):
+class CompilerConfiguration(object):
     '''
     classdocs
     '''
@@ -15,18 +15,18 @@ class StreamConfiguration(object):
         params[0]: .properties file
         params[1]: reading mode
         '''
-        self.fitxer= params[0].replace('\\','/')
-        self.readingMode= params[1]
+        self.__fitxer= params[0].replace('\\','/')
+        self.__readingMode= params[1]
         self._properties= {}
         self._compiler= 'openmodelica'
 
     def save_Properties(self):
-        fle= open(self.fitxer,'w')
+        fle= open(self.__fitxer,'w')
         for key in self._properties:
             fle.writelines(key+"="+str(self._properties[key])+"\n")
     
     def load_Properties(self):
-        fle= open(self.fitxer,self.readingMode)
+        fle= open(self.__fitxer,self.__readingMode)
         self._properties= {}
         for line in fle:
             options=line.split('=')
@@ -43,7 +43,7 @@ class StreamConfiguration(object):
     def configuration(self):
         return self._properties
     
-class SimulationConfigDY(StreamConfiguration):
+class SimulationConfigDY(CompilerConfiguration):
     '''
     startTime=0 
     stopTime=0
@@ -68,12 +68,12 @@ class SimulationConfigDY(StreamConfiguration):
         self.__method= ''
         self.__outputFormat= ''
         self.__modelName= ''
-        StreamConfiguration.__init__(self, params)
+        CompilerConfiguration.__init__(self, params)
         self._properties= {'startTime':'','stopTime':'','numberOfIntervals':'',\
                           'fixedStepSize':'','tolerance':'','method':'','outputFormat':''}
         
     def load_Properties(self):
-        StreamConfiguration.load_Properties(self)
+        CompilerConfiguration.load_Properties(self)
         self.__startTime = self._properties['startTime'].rstrip('\n')
         self.__stopTime= self._properties['stopTime'].rstrip('\n')
         self.__numberOfIntervals= self._properties['numberOfIntervals'].rstrip('\n')

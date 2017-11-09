@@ -5,11 +5,9 @@ Created on 4 apr 2014
 '''
 import os, sys
 import datetime, subprocess, time
-
-# from classes import OutVariableStream as outvar  
+ 
 from classes.SimulatorDY import SimulatorDY 
-# from modelicares.exps.simulators import dymola_script
-# from modelicares.simres import SimRes
+from modelicares.simres import SimRes
 
 class EngineDY(object):
     __experiment= {}

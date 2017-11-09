@@ -3,11 +3,16 @@ Created on 5 apr 2014
 
 @author: fragom
 '''
-
+import sys
 from utilsmee import CommandOMC
 from OMPython import OMCSession
 
 # from classes import OutVariableStream as outvar
+
+if sys.platform == 'darwin':
+    # On Mac let's assume omc is installed here and there might be a broken omniORB installed in a bad place
+    sys.path.append('/opt/openmodelica/bin/omc')
+    sys.path.append('/opt/local/bin/omc')
 
 class EngineOMC(object):
     
