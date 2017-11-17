@@ -40,14 +40,13 @@ class SimulatorDY(object):
         params[3] = output directory
         '''
         self._modelName = params[0]
+        self._resultFile= params[0]
 #         print 'self._modelName: ', self._modelName
         self._modelFile = params[1]
         self._libFile = params[2]
         self._workingDir = params[3]
         separateValues= params[4].split(os.sep)
         self._outputDir = '/'.join(separateValues)
-        separateValues= self._modelName.split('.')
-        self._resultFile= separateValues[-1]
         
         self.createDirectory(self._outputDir)
         
@@ -269,7 +268,7 @@ class SimulatorDY(object):
                           ', stopTime='  + str(self._simulator.get('t1')) + \
                           ', method="' + self._simulator.get('solver') + '"' + \
                           ', tolerance=' + str(self._simulator.get('eps')) + \
-                          ', resultFile="' + self._resultFile+ '"')
+                          ', resultFile=modelInstance')
             if self._simulator.has_key('numberOfIntervals'):
                 fil.write(', numberOfIntervals=' +
                           str(self._simulator.get('numberOfIntervals')))

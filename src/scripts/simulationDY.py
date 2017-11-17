@@ -9,11 +9,11 @@ from config import CompilerResources
 from config import SimulationConfigDY
 from modelicares import SimRes
 from engines.engineDymola import EngineDY
-from utils import ViewData
+from utilsmee import ViewData
 
     
-def load_Sources(__filesource):
-    __sources= CompilerResources([__filesource,'r'])
+def load_Sources(filesource):
+    __sources= CompilerResources([filesource,'r'])
     __sources.load_Properties()
     print "Model Folder: "+ __sources.modelFolder
     print "Model File: "+ __sources.modelFile
@@ -31,15 +31,18 @@ def load_Sources(__filesource):
         __sources.modelName= valueconfig if valueconfig!= '' else __sources.modelName
         valueconfig= raw_input("Library Folder: ")
         __sources.libraryFolder= valueconfig if valueconfig!= '' else __sources.libraryFolder
+        valueconfig= raw_input("Library File: ")
+        __sources.libraryFile= valueconfig if valueconfig!= '' else __sources.libraryFile
         valueconfig= raw_input("Output Folder: ")
         __sources.outputFolder= valueconfig if valueconfig!= '' else __sources.outputFolder
+        __sources.save_Properties()
     return __sources
     
-def load_configuration(__fileconfig):
-    __solverconfig= SimulationConfigDY([__fileconfig,'r'])
+def load_configuration(fileconfig):
+    __solverconfig= SimulationConfigDY([fileconfig,'r'])
     __solverconfig.load_Properties()
     print "Start Time: "+ __solverconfig.startTime
-    print "Stop File: "+ __solverconfig.stopTime
+    print "Stop Time: "+ __solverconfig.stopTime
     print "Number of Intervals: "+ __solverconfig.numberOfIntervals
     print "Solver: "+ __solverconfig.method
     print "Tolerance: "+ __solverconfig.tolerance
@@ -48,7 +51,7 @@ def load_configuration(__fileconfig):
     if valuechange== 'y' or valuechange=='Y':
         valueconfig= raw_input("Start Time: ")
         __solverconfig.startTime= valueconfig if valueconfig!= '' else __solverconfig.startTime
-        valueconfig= raw_input("Stop File: ")
+        valueconfig= raw_input("Stop Time: ")
         __solverconfig.stopTime= valueconfig if valueconfig!= '' else __solverconfig.stopTime
         valueconfig= raw_input("Number of Intervals: ")
         __solverconfig.numberOfIntervals= valueconfig if valueconfig!= '' else __solverconfig.numberOfIntervals
@@ -56,55 +59,38 @@ def load_configuration(__fileconfig):
         __solverconfig.method= valueconfig if valueconfig!= '' else __solverconfig.method
         valueconfig= raw_input("Tolerance: ")
         __solverconfig.tolerance= valueconfig if valueconfig!= '' else __solverconfig.tolerance
+        __solverconfig.save_Properties()
     return __solverconfig
 
-def simulate(__sources, __solverconfig):
-    ''' add library path to MODELICAPATH, to recognize folder where library is available '''
-    os.environ["MODELICAPATH"] = __sources.libraryFolder
+def startEngine(sources):
+    __simCity= EngineDY(sources)
+    __simCity.updateModelicaPath(sources)
+    os.chdir(sources.modelFolder)
+    return __simCity
+    
+def runEngine(simCity, solverconfig):
     ''' Change path to model folder '''
-    os.chdir(__sources.modelFolder)
-    
-    simCity= EngineDY(__sources, __solverconfig)
-    simCity.numberOfIntervals= __solverconfig.numberOfIntervals
-    simCity.solver= __solverconfig.method
-    simCity.startTime= __solverconfig.startTime
-    simCity.stopTime= __solverconfig.stopTime
-    simCity.tolerance= __solverconfig.tolerance
-    simCity.resultFile= __sources.modelName
+    simCity.updateSolverConfiguration(solverconfig)
+    simCity.numberOfIntervals= solverconfig.numberOfIntervals
+    simCity.solver= solverconfig.method
+    simCity.startTime= solverconfig.startTime
+    simCity.stopTime= solverconfig.stopTime
+    simCity.tolerance= solverconfig.tolerance
+    simCity.resultFile= sources.modelName
     simCity.simulate()
-    ''' TODO get the result file '''
 #     print 'simCity.resultFile ', simCity.resultFile
-    simulationResult= __sources.outputFolder+ os.sep+ simCity.resultFile
-#     print simulationResult
-    print SimRes(simulationResult)
+    __simulationFile= sources.outputFolder+ os.sep+ simCity.resultFile
+    __simulationData= SimRes(__simulationFile)
+    return [__simulationFile, __simulationData]
 
-#     def saveOutputs(self):
-#         '''
-#         The structure of the saving format takes into account format measurements from PMU, form v/i, anglev/anglei 
-#         '''
-#         resultmat= self.moModel.split('.')[-1]
-#         resultmat+= '.mat'
-#         os.chdir(self.outPath)
-#         h5Name=  self.moModel+ '_&'+ 'dymola'+ '.h5'
-#         resulth5= self.outPath+ '/'+ h5Name
-#         h5pmu= OutputH5Stream([self.outPath, resulth5, resultmat], 'dymola')
-#         h5pmu.open_h5(self.moModel) 
-# #         print 'self.outputs.get_varList()', self.outputs.get_varList()
-#         for compo, signalname in self.outputs.get_varList():
-#             l_signals= signalname.split(',')
-#             h5pmu.set_senyalRect(compo, l_signals[0], l_signals[1])
-# #             print 'l_signals', l_signals
-#             h5pmu.save_h5Names(compo, l_signals) 
-#             h5pmu.save_h5Values(compo) 
-#         h5pmu.close_h5()
-#         ''' object h5 file with result data'''
-#         return h5pmu
-    
 if __name__ == '__main__':
     sources= load_Sources(sys.argv[1])
     solverconfig= load_configuration(sys.argv[2])
     "simulate and return a ModelicaRes.SimRes object"
-    resData= simulate(sources, solverconfig)
+    simCity= startEngine(sources)
+    [resFile, resData]= runEngine(simCity, solverconfig)
+    sources.outputFile= resFile
+    sources.save_Properties()
     while (True):
         ViewData.plotOutputs(resData)
         value= raw_input("Plot another signal (y/n) ?: ")

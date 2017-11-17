@@ -19,7 +19,7 @@ class ViewData(object):
         '''
     
     @staticmethod
-    def selectData(self, arrayQualquiera, message):
+    def selectData(arrayQualquiera, message):
         count= 0
         indexMapping={}
         for i, meas in enumerate(arrayQualquiera):
@@ -38,12 +38,13 @@ class ViewData(object):
         return values  
         
     @staticmethod
-    def plotOutputs(self, resData):
-        values= self.selectData(resData.names)
+    def plotOutputs(resData):
+        print resData.names
+        values= ViewData.selectData(sorted(resData.names()),"Select the signal you want to plot? ")
         mplt.figure(1)
         for senyal in values: 
             signal_magnitude= resData[senyal]
-            signal_sampletime= resData["time"]
+            signal_sampletime= resData["Time"]
             mplt.plot(signal_sampletime, signal_magnitude)
         mplt.legend(values)
         mplt.ylabel("Units (p.u.)")

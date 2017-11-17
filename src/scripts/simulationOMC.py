@@ -32,6 +32,7 @@ def load_Sources(__filesource):
         __sources.libraryFolder= valueconfig if valueconfig!= '' else __sources.libraryFolder
         valueconfig= raw_input("Output Folder: ")
         __sources.outputFolder= valueconfig if valueconfig!= '' else __sources.outputFolder
+        __sources.save_Properties()
     return __sources
         
 def load_configuration(__fileconfig):
@@ -55,9 +56,10 @@ def load_configuration(__fileconfig):
         __solverconfig.method= valueconfig if valueconfig!= '' else __solverconfig.method
         valueconfig= raw_input("Tolerance: ")
         __solverconfig.tolerance= valueconfig if valueconfig!= '' else __solverconfig.tolerance
+        __solverconfig.save_Properties()
     return __solverconfig
 
-def simulate(__sources, __solverconfig):
+def runEngine(__sources, __solverconfig):
     simCity= EngineOMC(__sources, __solverconfig)
     simCity.numberOfIntervals= __solverconfig.numberOfIntervals
     simCity.solver= __solverconfig.method
@@ -68,9 +70,9 @@ def simulate(__sources, __solverconfig):
     simCity.simulate()
     ''' TODO get the result file '''
 #     print 'simCity.resultFile ', simCity.resultFile
-    simulationResult= __sources.outputFolder+ os.sep+ simCity.resultFile
-#     print simulationResult
-    return SimRes(simulationResult)
+    __simulationFile= sources.outputFolder+ os.sep+ simCity.resultFile
+    __simulationData= SimRes(__simulationFile)
+    return [__simulationFile, __simulationData]
     
 #     def saveOutputs(self, _resultfile):
 #         ''' build file path with outputpath, using the ModelicaRes to read the .mat file 
@@ -101,7 +103,9 @@ if __name__ == '__main__':
     sources= load_Sources(sys.argv[1])
     solverconfig= load_configuration(sys.argv[2])
     "simulate and return a ModelicaRes.SimRes object"
-    resData= simulate(sources, solverconfig)
+    [resFile, resData]= runEngine(sources, solverconfig)
+    sources.outputFile= resFile
+    sources.save_Properties()
     while (True):
         ViewData.plotOutputs(resData)
         value= raw_input("Plot another signal (y/n) ?: ")

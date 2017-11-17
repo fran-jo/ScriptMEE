@@ -31,7 +31,7 @@ class EngineOMC(object):
         return self.__omcSession
     @omcSession.setter
     def omcSession(self, valor):
-        self.__omcSession= valor;
+        self.__omcSession= valor
         
     def simulate(self):
         objCOMC= CommandOMC()

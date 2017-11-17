@@ -88,7 +88,7 @@ class SimulationConfigDY(CompilerConfiguration):
         return self.__startTime
     @startTime.setter
     def startTime(self, valor):
-        self._properties['startTime']= valor
+        self._properties['startTime']= valor.rstrip('\n') if '\n' in valor else valor
         self.__startTime= valor;
         
     @property
@@ -97,7 +97,7 @@ class SimulationConfigDY(CompilerConfiguration):
         return self.__stopTime
     @stopTime.setter
     def stopTime(self, valor):
-        self._properties['stopTime']= valor
+        self._properties['stopTime']= valor.rstrip('\n') if '\n' in valor else valor
         self.__stopTime= valor;
     
     @property
@@ -106,7 +106,7 @@ class SimulationConfigDY(CompilerConfiguration):
         return self.__timeOut
     @timeOut.setter
     def timeOut(self, valor):
-        self._properties['timeOut']= valor
+        self._properties['timeOut']= valor.rstrip('\n') if '\n' in valor else valor
         self.__timeOut= valor;
         
     @property
@@ -115,7 +115,7 @@ class SimulationConfigDY(CompilerConfiguration):
         return self.__numberOfIntervals
     @numberOfIntervals.setter
     def numberOfIntervals(self, valor):
-        self._properties['numberOfIntervals']= valor
+        self._properties['numberOfIntervals']= valor.rstrip('\n') if '\n' in valor else valor
         self.__numberOfIntervals= valor;
     
     @property
@@ -124,7 +124,7 @@ class SimulationConfigDY(CompilerConfiguration):
         return self.__tolerance
     @tolerance.setter
     def tolerance(self, valor):
-        self._properties['tolerance']= valor
+        self._properties['tolerance']= valor.rstrip('\n') if '\n' in valor else valor
         self.__tolerance= valor
     
     @property
@@ -133,7 +133,7 @@ class SimulationConfigDY(CompilerConfiguration):
         return self.__method
     @method.setter
     def method(self, valor):
-        self._properties['method']= valor
+        self._properties['method']= valor.rstrip('\n') if '\n' in valor else valor
         self.__method= valor
     
     @property

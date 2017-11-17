@@ -23,7 +23,8 @@ class StreamProperties(object):
     def save_Properties(self):
         fle= open(self.__fitxer,'w')
         for key in self._properties:
-            fle.writelines(key+"="+str(self._properties[key])+'\n')
+            print key+"="+str(self._properties[key])+'\n'
+            fle.write(key+"="+str(self._properties[key])+'\n')
     
     def load_Properties(self):
         fle= open(self.__fitxer,self.__readingMode)
@@ -48,6 +49,7 @@ class CompilerResources(StreamProperties):
     libraryFile=''
     modelName=''
     outputPath= ''
+    outputFile= ''
     '''
     
     def __init__(self, params):
@@ -61,93 +63,87 @@ class CompilerResources(StreamProperties):
         self.__modelfile= ''
         self.__libraryfile= ''
         self.__modelname= ''
+        self.__outputfile= ''
         StreamProperties.__init__(self, params)
         self._properties= {'cimPath':'','modelPath':'','libraryPath':'','modelFile':'',\
-                          'libraryFile':'','modelName':'','outputPath':''}
+                          'libraryFile':'','modelName':'','outputPath':'', 'outputFile':''}
     
     def load_Properties(self):
         StreamProperties.load_Properties(self)
-        self.__cimfolder = self._properties['cimPath']
-        self.__modelfolder= self._properties['modelPath']
-        self.__libraryfolder= self._properties['libraryPath']
-        self.__outputfolder= self._properties['outputPath']
+        self.__cimfolder = self._properties['cimPath'][:-1] if '\n' in self._properties['cimPath'] else self._properties['cimPath']
+        self.__modelfolder= self._properties['modelPath'][:-1] if '\n' in self._properties['modelPath'] else self._properties['modelPath']
+        self.__modelfile= self._properties['modelFile'][:-1] if '\n' in self._properties['modelFile'] else self._properties['modelFile']
+        self.__modelname= self._properties['modelName'][:-1] if '\n' in self._properties['modelName'] else self._properties['modelName']
+        self.__libraryfolder= self._properties['libraryPath'][:-1] if '\n' in self._properties['libraryPath'] else self._properties['libraryPath']
+        self.__libraryfile= self._properties['libraryFile'][:-1] if '\n' in self._properties['libraryFile'] else self._properties['libraryFile']
+        self.__outputfolder= self._properties['outputPath'][:-1] if '\n' in self._properties['outputPath'] else self._properties['outputPath']
+        self.__outputfile= self._properties['outputFile'][:-1] if '\n' in self._properties['outputFile'] else self._properties['outputFile']
+        self._properties= {'cimPath':'','modelPath':'','libraryPath':'','modelFile':'',\
+                          'libraryFile':'','modelName':'','outputPath':'', 'outputFile':''}
         
     ''' getter/setter methods with _properties '''
     @property
     def cimFolder(self):
-        self.__cimfolder= self._properties['cimPath'][:-1]
         return self.__cimfolder
     @cimFolder.setter
-    def cimFolder(self, path):
-        self._properties['cimPath']= path
-        self.__cimfolder= path
+    def cimFolder(self, value):
+        self.__cimfolder= value.rstrip('\n') if '\n' in value else value
+        self._properties['cimPath']= self.__cimfolder
         
     @property
     def modelFolder(self):
-        self.__modelfolder= self._properties['modelPath'][:-1]
         return self.__modelfolder
     @modelFolder.setter
-    def modelFolder(self, path):
-        self._properties['modelPath']= path
-        self.__modelfolder= path
-
+    def modelFolder(self, value):
+        self.__modelfolder= value.rstrip('\n') if '\n' in value else value
+        self._properties['modelPath']= self.__modelfolder
+        
     @property
     def modelFile(self):
-        self.__modelfile= self._properties['modelFile'][:-1]
         return self.__modelfile
     @modelFile.setter
-    def modelFile(self, path):
-        if (path!= ''):
-            self._properties['modelFile']= path
-            self.__modelfile= path
-        else:
-            self._properties['modelFile']= 'none'
-            self.__modelfile= 'none'
+    def modelFile(self, value):
+        self.__modelfile= value.rstrip('\n') if '\n' in value else value
+        self._properties['modelFile']= self.__modelfile
        
     @property
     def modelName(self):
-        self.__modelname= self._properties['modelName'][:-1]
         return self.__modelname
     @modelName.setter
-    def modelName(self, path):
+    def modelName(self, value):
         ''' path is the full path of the file '''
-        if (path!= ''):
-            nombre= path.split('/')[-2]
-            print nombre
-            self._properties['modelName']= nombre
-            print self._properties['modelName']
-            self.__modelname= nombre
-        else:
-            self._properties['modelName']= 'none'
-            self.__modelname= 'none'
-        ''' the name of the file without extension '''
+        self.__modelname= value.rstrip('\n') if '\n' in value else value
+        self._properties['modelName']= self.__modelname
         
     @property
     def libraryFolder(self):
-        self.__libraryfolder= self._properties['libraryPath'][:-1]
         return self.__libraryfolder
     @libraryFolder.setter
-    def libraryFolder(self, path):
-        self._properties['libraryPath']= path
-        self.__libraryfolder= path
+    def libraryFolder(self, value):
+        self.__libraryfolder= value.rstrip('\n') if '\n' in value else value
+        self._properties['libraryPath']= self.__libraryfolder
+        
     @property
     def libraryFile(self):
-        self.__libraryfile= self._properties['libraryFile'][:-1]
         return self.__libraryfile
     @libraryFile.setter
-    def libraryFile(self, path):
-        if (path!= ''):
-            self._properties['libraryFile']= path
-            self.__libraryfile= path
-        else:
-            self._properties['libraryFile']= 'none'
-            self.__libraryfile= 'none'
+    def libraryFile(self, value):
+        self.__libraryfile = value.rstrip('\n') if '\n' in value else value
+        self._properties['libraryFile']= self.__libraryfile
             
     @property
     def outputFolder(self):
-        self.__outputfolder= self._properties['outputPath'][:-1]
         return self.__outputfolder
     @outputFolder.setter
-    def outputFolder(self, path):
-        self._properties['outputPath']= path
-        self.__outputfolder= path
+    def outputFolder(self, value):
+        self.__outputfolder= value.rstrip('\n') if '\n' in value else value
+        self._properties['outputPath']= self.__outputfolder
+        
+    @property
+    def outputFile(self):
+        return self.__outputfile
+    @outputFile.setter
+    def outputFile(self, value):
+        self.__outputfile= value.rstrip('\n') if '\n' in value else value
+        self._properties['outputFile']= self.__outputfile
+        

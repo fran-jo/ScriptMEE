@@ -22,58 +22,65 @@ class EngineDY(object):
         
     @property
     def startTime(self):
-        return self.__experiment["startTime"]
+        return self.__experiment["startTime"].rstrip('\n')
     @startTime.setter
     def startTime(self, value):
-        self.__experiment["startTime"]= value
+        self.__experiment["startTime"]= value.rstrip('\n') if '\n' in value else value
         
     @property
     def stopTime(self):
-        return self.__experiment["stopTime"]
+        return self.__experiment["stopTime"].rstrip('\n')
     @stopTime.setter
     def stopTime(self, value):
-        self.__experiment["stopTime"]= value
+        self.__experiment["stopTime"]= value.rstrip('\n') if '\n' in value else value
         
     @property
     def solver(self):
-        return self.__experiment["solver"]
+        return self.__experiment["solver"].rstrip('\n')
     @solver.setter
     def solver(self, value):
-        self.__experiment["solver"]= value
+        self.__experiment["solver"]= value.rstrip('\n') if '\n' in value else value
         
     @property
     def tolerance(self):
-        return self.__experiment["tolerance"]
+        return self.__experiment["tolerance"].rstrip('\n')
     @tolerance.setter
     def tolerance(self, value):
-        self.__experiment["tolerance"]= value
+        self.__experiment["tolerance"]= value.rstrip('\n') if '\n' in value else value
         
     @property
     def numberOfIntervals(self):
-        return self.__experiment["numberOfIntervals"]
+        return self.__experiment["numberOfIntervals"].rstrip('\n')
     @numberOfIntervals.setter
     def numberOfIntervals(self, value):
-        self.__experiment["numberOfIntervals"]= value
+        self.__experiment["numberOfIntervals"]= value.rstrip('\n') if '\n' in value else value
         
     @property
     def resultFile(self):
-        return self.__experiment["resultFile"]
+        return self.__experiment["resultFile"].rstrip('\n')
     @resultFile.setter
     def resultFile(self, value):
-        self.__experiment["resultFile"]= value
+        self.__experiment["resultFile"]= value.rstrip('\n') if '\n' in value else value
         
     @property
     def timeout(self):
-        return self.__experiment["timeout"]
+        return self.__experiment["timeout"].rstrip('\n')
     @timeout.setter
     def timeout(self, value):
-        self.__experiment["timeout"]= value
+        self.__experiment["timeout"]= value.rstrip('\n') if '\n' in value else value
         
+    def updateModelicaPath(self, sources):
+        os.environ["MODELICAPATH"]= sources.modelFolder
+        for carpeta in os.walk(sources.modelFolder):
+            os.environ["MODELICAPATH"] += os.pathsep + str(carpeta[0]) 
+        os.environ["MODELICAPATH"]+= os.pathsep + sources.libraryFolder
+        print os.environ["MODELICAPATH"]
+    
+    def updateSolverConfiguration(self, solverConfig):
+        self.__configuration= solverConfig
+    
     def simulate(self):
 #         tic= timeit.default_timer()
-        ''' add library path to MODELICAPATH, to recognize folder where library is available '''
-        os.environ["MODELICAPATH"] = self.__sources.libraryFolder
-        ''' Change path to model folder '''
         os.chdir(self.__sources.modelFolder)
         
         s= SimulatorDY([self.__sources.modelName, self.__sources.modelFile,

@@ -1,4 +1,4 @@
 from SimulationConfigDY import SimulationConfigDY
-from JModelicaConfiguration import JModelicaConfiguration
+from SimulationConfigJM import SimulationConfigJM
 from SimulationConfigOMC import SimulationConfigOMC
-from CompilerResources import CompilerResources
+from SimulationResources import CompilerResources

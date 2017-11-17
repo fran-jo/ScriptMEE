@@ -73,7 +73,7 @@ class StreamCIMH5(object):
     
     
     def add_AnalogMeasurement(self, variable, unisymb= 'unit', 
-                              unitmultipl= 'multiplier', measType= 'Analog Measurement'):
+                              unitmultipl= 'multiplier', measType= 'AnalogMeasurement'):
         ''' resource is the name of the variable 
         add a new group and add attributes '''
         self.__ganalogMeasurement= self.__gPowerSystemResource.create_group(variable)
